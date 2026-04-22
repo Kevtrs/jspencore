@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>LaFabrik — Circuit</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--red:#e8001d;--bg:#f6f6f2;--card:#fff;--border:#e6e6e6;--text:#171717;--sub:#7a7a7a;--green:#22c55e;--orange:#f97316;--gold:#c9a84c}
+body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;background:var(--bg);color:var(--text);max-width:520px;margin:0 auto;min-height:100vh}
+.nav{background:#fff;padding:.75rem 1rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;border-bottom:1px solid var(--border)}
+.nav-brand{font-size:1.1rem;font-weight:900}.nav-brand em{color:var(--red);font-style:normal}
+.nav-stats{text-align:right}.nav-ca{font-size:1.2rem;font-weight:900;color:var(--red)}.nav-sold,.nav-stock{font-size:11px;color:var(--sub);font-weight:600}.nav-stock{color:var(--gold)}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);background:#fff;border-bottom:1px solid var(--border);position:sticky;top:57px;z-index:99}
+.tab{padding:.8rem 0;text-align:center;font-size:11px;font-weight:700;letter-spacing:.05em;color:#aaa;cursor:pointer;border-bottom:2px solid transparent}
+.tab.active{color:var(--red);border-bottom-color:var(--red)}
+.page{display:none;padding:1rem 1rem 4rem}.page.active{display:block}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1rem;margin-bottom:.7rem}
+.sec{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#9a9a9a;margin-bottom:.5rem}
+.inp{width:100%;padding:.8rem .9rem;border:1.5px solid var(--border);border-radius:10px;background:#fafafa;font-size:.95rem;color:var(--text)}
+.inp:focus{outline:none;border-color:var(--red);background:#fff}
+.q-grid{display:flex;flex-wrap:wrap;gap:.4rem}.qbtn{padding:.5rem .75rem;border:1px solid var(--border);border-radius:9px;background:#fff;color:#666;font-weight:700;font-size:12px;cursor:pointer}
+.qbtn.on{border-color:var(--green);color:var(--green);background:rgba(34,197,94,.07)}
+.cat-title{font-size:11px;font-weight:800;letter-spacing:.1em;color:#444;margin:.5rem 0;display:flex;align-items:center;gap:.35rem}
+.prod-row,.sell-card,.sum-row{border:1px solid var(--border);border-radius:11px;background:#fff}
+.prod-row{padding:.8rem;margin-bottom:.5rem}.prod-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem}
+.prod-name{font-weight:800;font-size:.9rem}.del-btn{border:none;background:rgba(232,0,29,.08);color:var(--red);width:28px;height:28px;border-radius:8px;cursor:pointer}
+.stock-line{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}.stk-group{display:flex;align-items:center;gap:.35rem;background:#f9f9f9;border:1px solid var(--border);border-radius:8px;padding:4px 7px}
+.stk-lbl{font-size:9px;color:#888;font-weight:700;text-transform:uppercase;letter-spacing:.08em}.qb{width:30px;height:30px;border:none;border-radius:7px;background:#fff;border:1px solid var(--border);font-size:1.1rem;cursor:pointer}
+.qnum{font-weight:900;min-width:24px;text-align:center}.tot-lbl{margin-left:auto;font-weight:800;color:var(--gold);font-size:12px}
+.sell-card{padding:.8rem .9rem;margin-bottom:.5rem;display:flex;justify-content:space-between;align-items:center;gap:.6rem}.s-info{flex:1;min-width:0}
+.s-name{font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:.92rem}.s-stock{font-size:11px;color:#8a8a8a;font-weight:600}.s-stock.low{color:var(--orange)}.s-stock.out{color:var(--red)}
+.s-right{display:flex;gap:.45rem;align-items:center}.undo{width:35px;height:35px;border:1px solid var(--border);border-radius:8px;background:#fafafa;cursor:pointer}.sell-btn{width:56px;height:56px;border:none;border-radius:14px;background:var(--red);color:#fff;font-size:1.8rem;font-weight:900;cursor:pointer}
+.sell-btn:disabled{background:#ddd;color:#999;cursor:not-allowed}
+.sum-hero{background:#fff;border:1px solid var(--border);border-radius:15px;padding:1.3rem;text-align:center;margin-bottom:.8rem}.sh-ca{font-size:3rem;font-weight:900}.sh-units{font-size:.88rem;color:#888;margin-top:.2rem}
+.sum-row{padding:.65rem .7rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem;gap:.4rem}.sum-name{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:700;font-size:.87rem}
+.sum-s{font-size:.85rem;font-weight:800;color:var(--red)}.sum-c{font-size:.82rem;font-weight:800;color:var(--green)}.sum-r{font-size:.82rem;color:#888}
+.btn{width:100%;padding:.95rem;border:none;border-radius:11px;font-size:.93rem;font-weight:800;cursor:pointer}.btn-red{background:var(--red);color:#fff}.btn-outline{margin-top:.6rem;background:transparent;border:1px solid var(--border);color:#777}
+.btn-sm-add{padding:.6rem .95rem;border-radius:9px;border:1px solid var(--red);background:#fff;color:var(--red);font-weight:700;cursor:pointer;white-space:nowrap}
+.toast{position:fixed;bottom:1.4rem;left:50%;transform:translateX(-50%) translateY(120px);background:#111;color:#fff;padding:.6rem 1rem;border-radius:99px;font-size:.84rem;font-weight:700;transition:transform .28s;z-index:999;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}.empty{text-align:center;padding:2rem 1rem;color:#9a9a9a}
+.sync-line{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:.5rem}
+.note{font-size:11px;color:#888;line-height:1.4;margin-top:.5rem}
+</style>
+</head>
+<body>
+<div class="nav">
+  <div class="nav-brand">La<em>Fabrik</em></div>
+  <div class="nav-stats"><div class="nav-ca" id="nav-ca">0 €</div><div class="nav-sold" id="nav-sold">0 vendu</div><div class="nav-stock" id="nav-stock">📦 0 restant</div></div>
+</div>
+<div class="tabs">
+  <div class="tab active" id="tab-setup" onclick="goTab('setup')">📦 Stock</div>
+  <div class="tab" id="tab-sell" onclick="goTab('sell')">🏁 Ventes</div>
+  <div class="tab" id="tab-summary" onclick="goTab('summary')">📊 Résumé</div>
+</div>
+
+<div class="page active" id="page-setup">
+  <div class="card"><div class="sec">Nom de l'événement</div><input class="inp" id="ev-name" placeholder="ex: GPFH 2026"></div>
+  <div class="card" style="display:flex;gap:.8rem;align-items:end"><div style="flex:1"><div class="sec">Prix unitaire</div><input class="inp" id="ev-price" type="number" value="35" min="1"></div><div style="font-size:1.3rem;color:#999;padding-bottom:.4rem">€</div></div>
+  <div id="quick-blocks"></div>
+  <div class="card">
+    <div class="sec">Ajouter un modèle</div>
+    <div style="display:flex;gap:.5rem;margin-bottom:.65rem"><input class="inp" id="custom-name" placeholder="Nom du cadre"><button class="btn-sm-add" id="btn-custom-add" type="button">+ Ajouter</button></div>
+    <select class="inp" id="custom-cat"><option>F1 — Casques</option><option>F1 — Calendriers &amp; Circuits</option><option>MotoGP — Casques</option><option>MotoGP — Calendriers &amp; Circuits</option><option>Auto</option></select>
+  </div>
+
+  <div class="card">
+    <div class="sec">Sync GitHub (toi + ta femme)</div>
+    <input class="inp" id="gh-gist" placeholder="Gist ID partagé">
+    <div class="sync-line">
+      <input class="inp" id="gh-token" placeholder="Token GitHub (gist)" type="password">
+      <input class="inp" id="gh-device" placeholder="Nom appareil (ex: iPhone Paul)">
+    </div>
+    <div class="sync-line">
+      <button class="btn-sm-add" type="button" onclick="saveSyncConfig()">💾 Enregistrer</button>
+      <button class="btn-sm-add" type="button" onclick="syncNow()">🔄 Sync maintenant</button>
+    </div>
+    <div class="note">Utilisez le même Gist ID et token sur vos 2 téléphones. L'app essaie de synchroniser toutes les 10s.</div>
+  </div>
+
+  <div class="sec">Stock défini</div>
+  <div id="stock-list"></div>
+  <button class="btn btn-red" id="btn-start" type="button">🏁 DÉMARRER LES VENTES</button>
+  <button class="btn btn-outline" id="btn-reset" type="button">↺ Tout remettre à zéro</button>
+</div>
+
+<div class="page" id="page-sell">
+  <div id="sell-bar" style="margin-bottom:.75rem;display:none"><div style="font-weight:900" id="sell-ev-name"></div><div style="font-size:11px;color:#888" id="sell-ev-stats"></div></div>
+  <div id="sell-list"></div>
+  <div class="empty" id="sell-empty" style="display:none">📦<br>Configurez le stock d'abord</div>
+</div>
+
+<div class="page" id="page-summary">
+  <div class="sum-hero"><div style="font-size:10px;color:#999;font-weight:700;letter-spacing:.15em;text-transform:uppercase">Chiffre d'affaires</div><div class="sh-ca" id="sum-ca">0 €</div><div class="sh-units" id="sum-units">0 cadre vendu</div></div>
+  <div class="card"><div class="sec">Ventes par cadre</div><div id="sum-sold"></div></div>
+  <div class="card"><div class="sec">Stock restant</div><div id="sum-rest"></div></div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script>
+const STATE_KEY='lf4';
+const SYNC_KEY='lf4_sync';
+const FILE_NAME='lafabrik-sync.json';
+
+const CATALOG={
+  'F1 — Casques':['Senna Casque','Schumacher Casque','Hamilton Casque','Leclerc Casque','Verstappen Casque','Norris Casque'],
+  'F1 — Calendriers & Circuits':['Calendrier F1 2026','Circuits de France'],
+  'MotoGP — Casques':['Marquez Casque','Rossi Casque','Zarco','Quartararo'],
+  'MotoGP — Calendriers & Circuits':['Calendrier MotoGP 2026','Île de Man'],
+  'Auto':['Porsche','Nurburgring','Alpine','Ferrari']
+};
+const ICONS={'F1 — Casques':'🏎️','F1 — Calendriers & Circuits':'📅','MotoGP — Casques':'🏍️','MotoGP — Calendriers & Circuits':'📅','Auto':'🚗'};
+
+let S={eventName:'',price:35,updatedAt:Date.now(),updatedBy:'local',products:[]};
+let syncCfg={gistId:'',token:'',deviceName:'',lastSha:''};
+
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);}
+function storeGet(k,f){try{return JSON.parse(localStorage.getItem(k)||'null')||f}catch(_){return f}}
+function storeSet(k,v){localStorage.setItem(k,JSON.stringify(v))}
+function totalStock(p){return (p.cartons||0)*11+(p.units||0)}
+function remaining(p){return Math.max(0,totalStock(p)-(p.sold||0))}
+function totalSold(){return S.products.reduce((a,p)=>a+(p.sold||0),0)}
+function totalRem(){return S.products.reduce((a,p)=>a+remaining(p),0)}
+function touch(){S.updatedAt=Date.now();S.updatedBy=syncCfg.deviceName||'local';saveLocal()}
+
+function load(){
+  S=storeGet(STATE_KEY,S);
+  syncCfg=storeGet(SYNC_KEY,syncCfg);
+  document.getElementById('ev-name').value=S.eventName||'';
+  document.getElementById('ev-price').value=S.price||35;
+  document.getElementById('gh-gist').value=syncCfg.gistId||'';
+  document.getElementById('gh-token').value=syncCfg.token||'';
+  document.getElementById('gh-device').value=syncCfg.deviceName||'';
+}
+function saveLocal(){storeSet(STATE_KEY,S)}
+function saveSyncConfig(){
+  syncCfg.gistId=document.getElementById('gh-gist').value.trim();
+  syncCfg.token=document.getElementById('gh-token').value.trim();
+  syncCfg.deviceName=document.getElementById('gh-device').value.trim()||'device';
+  storeSet(SYNC_KEY,syncCfg);showToast('Config sync enregistrée ✓');
+}
+
+async function fetchGist(){
+  if(!syncCfg.gistId||!syncCfg.token) return null;
+  const r=await fetch(`https://api.github.com/gists/${syncCfg.gistId}`,{headers:{Authorization:`Bearer ${syncCfg.token}`,Accept:'application/vnd.github+json'}});
+  if(!r.ok) throw new Error('Impossible de lire le Gist');
+  return await r.json();
+}
+async function pushToGist(){
+  const payload={eventName:S.eventName,price:S.price,updatedAt:S.updatedAt,updatedBy:S.updatedBy,products:S.products};
+  const body={files:{[FILE_NAME]:{content:JSON.stringify(payload)}}};
+  const r=await fetch(`https://api.github.com/gists/${syncCfg.gistId}`,{method:'PATCH',headers:{Authorization:`Bearer ${syncCfg.token}`,'Content-Type':'application/json',Accept:'application/vnd.github+json'},body:JSON.stringify(body)});
+  if(!r.ok) throw new Error('Sync push échoué');
+}
+async function pullFromGist(){
+  const gist=await fetchGist();
+  if(!gist||!gist.files||!gist.files[FILE_NAME]||!gist.files[FILE_NAME].content) return;
+  const remote=JSON.parse(gist.files[FILE_NAME].content);
+  if((remote.updatedAt||0)>(S.updatedAt||0)&&remote.updatedBy!==syncCfg.deviceName){
+    S=remote;saveLocal();buildQuick();renderSetup();renderSell();renderSummary();refreshNav();
+    showToast(`Données mises à jour depuis ${remote.updatedBy||'autre appareil'}`);
+  }
+}
+async function syncNow(){
+  try{
+    saveSyncConfig();
+    await pullFromGist();
+    await pushToGist();
+    showToast('Sync GitHub OK');
+  }catch(e){showToast('Erreur sync GitHub');}
+}
+setInterval(()=>{ if(syncCfg.gistId&&syncCfg.token) syncNow(); },10000);
+
+function refreshNav(){const ts=totalSold();document.getElementById('nav-ca').textContent=(ts*S.price)+' €';document.getElementById('nav-sold').textContent=ts+' vendu'+(ts>1?'s':'');document.getElementById('nav-stock').textContent='📦 '+totalRem()+' restant'+(totalRem()>1?'s':'')}
+function buildQuick(){
+  const el=document.getElementById('quick-blocks');el.innerHTML='';
+  Object.keys(CATALOG).forEach(cat=>{
+    const block=document.createElement('div');block.className='card';
+    block.innerHTML=`<div class="cat-title">${ICONS[cat]||'📦'} ${esc(cat)}</div><div class="q-grid"></div>`;
+    const grid=block.querySelector('.q-grid');
+    CATALOG[cat].forEach(name=>{
+      const btn=document.createElement('button');btn.className='qbtn';
+      const added=S.products.some(p=>p.name===name);
+      if(added) btn.classList.add('on');
+      btn.textContent=(added?'✓ ':'+ ')+name;
+      btn.onclick=()=>toggleQuick(name,cat,btn);
+      grid.appendChild(btn);
+    });
+    el.appendChild(block);
+  });
+}
+function toggleQuick(name,cat,btn){
+  const idx=S.products.findIndex(p=>p.name===name);
+  if(idx>=0){if((S.products[idx].sold||0)>0){showToast('⚠️ Déjà des ventes enregistrées');return;}S.products.splice(idx,1);btn.classList.remove('on');btn.textContent='+ '+name;showToast(name+' retiré');}
+  else{S.products.push({id:Date.now()+Math.random(),name,cat,cartons:0,units:0,sold:0});btn.classList.add('on');btn.textContent='✓ '+name;showToast(name+' ajouté ✓');}
+  touch();renderSetup();refreshNav();
+}
+function addCustom(){
+  const name=document.getElementById('custom-name').value.trim();const cat=document.getElementById('custom-cat').value;
+  if(!name){showToast('Entrez un nom');return;}
+  if(S.products.some(p=>p.name.toLowerCase()===name.toLowerCase())){showToast('Existe déjà');return;}
+  S.products.push({id:Date.now()+Math.random(),name,cat,cartons:0,units:0,sold:0});
+  document.getElementById('custom-name').value='';touch();buildQuick();renderSetup();refreshNav();showToast(name+' ajouté ✓');
+}
+function setCartons(id,v){const p=S.products.find(x=>x.id===id);if(!p) return;p.cartons=Math.max(0,v);p.sold=Math.min(p.sold,totalStock(p));touch();renderSetup();refreshNav();}
+function setUnits(id,v){const p=S.products.find(x=>x.id===id);if(!p) return;p.units=Math.max(0,v);p.sold=Math.min(p.sold,totalStock(p));touch();renderSetup();refreshNav();}
+function delProd(id){const p=S.products.find(x=>x.id===id);if(p&&p.sold>0&&!confirm('Ce cadre a des ventes. Supprimer quand même ?')) return;S.products=S.products.filter(x=>x.id!==id);touch();buildQuick();renderSetup();refreshNav();}
+
+function renderSetup(){
+  const list=document.getElementById('stock-list');
+  if(!S.products.length){list.innerHTML='<div class="empty">📦<br>Ajoutez des modèles ci-dessus</div>';return;}
+  const cats={};S.products.forEach(p=>{if(!cats[p.cat]) cats[p.cat]=[];cats[p.cat].push(p)});
+  let html='';Object.keys(cats).forEach(cat=>{html+=`<div class="cat-title">${ICONS[cat]||'📦'} ${esc(cat)}</div>`;cats[cat].forEach(p=>{const tot=totalStock(p);html+=`<div class="prod-row"><div class="prod-top"><div class="prod-name">${esc(p.name)}</div><button class="del-btn" onclick="delProd(${p.id})" type="button">✕</button></div><div class="stock-line"><div class="stk-group"><span class="stk-lbl">Cartons ×11</span><button class="qb" type="button" onclick="setCartons(${p.id},${p.cartons-1})">−</button><span class="qnum">${p.cartons}</span><button class="qb" type="button" onclick="setCartons(${p.id},${p.cartons+1})">+</button></div><div class="stk-group"><span class="stk-lbl">Unités</span><button class="qb" type="button" onclick="setUnits(${p.id},${p.units-1})">−</button><span class="qnum">${p.units}</span><button class="qb" type="button" onclick="setUnits(${p.id},${p.units+1})">+</button></div><span class="tot-lbl">= ${tot}</span></div></div>`})});
+  list.innerHTML=html;
+}
+function startSell(){S.price=parseFloat(document.getElementById('ev-price').value)||35;S.eventName=document.getElementById('ev-name').value.trim();if(!S.products.length){showToast('Ajoutez des cadres !');return;}if(!S.products.some(p=>totalStock(p)>0)){showToast('Définissez les quantités !');return;}touch();goTab('sell');showToast('Go ! Bonne vente 🏁')}
+function sell(id){const p=S.products.find(x=>x.id===id);if(!p||remaining(p)<=0)return;p.sold++;touch();refreshNav();renderSell();showToast('+1 '+p.name)}
+function undoSell(id){const p=S.products.find(x=>x.id===id);if(!p||p.sold<=0)return;p.sold--;touch();refreshNav();renderSell();showToast('Vente annulée')}
+function renderSell(){
+  const list=document.getElementById('sell-list'),empty=document.getElementById('sell-empty'),bar=document.getElementById('sell-bar');
+  if(!S.products.length){list.innerHTML='';empty.style.display='block';bar.style.display='none';return}
+  empty.style.display='none';bar.style.display='block';document.getElementById('sell-ev-name').textContent=S.eventName||'Événement en cours';
+  const ts=totalSold();document.getElementById('sell-ev-stats').textContent=`${ts} vendu${ts>1?'s':''} — ${ts*S.price} €`;
+  let html='';const cats={};S.products.forEach(p=>{if(!cats[p.cat])cats[p.cat]=[];cats[p.cat].push(p)});
+  Object.keys(cats).forEach(cat=>{html+=`<div class="cat-title">${ICONS[cat]||''} ${esc(cat)}</div>`;cats[cat].forEach(p=>{const rem=remaining(p),sc=rem===0?'out':rem<=3?'low':'',st=rem===0?'⛔ ÉPUISÉ':`${rem} restant${rem>1?'s':''}`;html+=`<div class="sell-card"><div class="s-info"><div class="s-name">${esc(p.name)}</div><div class="s-stock ${sc}">${st}${p.sold>0?` · ${p.sold} vendu${p.sold>1?'s':''}`:''}</div></div><div class="s-right">${p.sold>0?`<button class="undo" type="button" onclick="undoSell(${p.id})">↺</button>`:''}<button class="sell-btn" type="button" onclick="sell(${p.id})" ${rem===0?'disabled':''}>+</button></div></div>`})});
+  list.innerHTML=html;
+}
+function renderSummary(){
+  const ts=totalSold(),ca=ts*S.price;document.getElementById('sum-ca').textContent=`${ca} €`;document.getElementById('sum-units').textContent=`${ts} cadre${ts>1?'s':''} vendu${ts>1?'s':''}`;
+  const sold=S.products.filter(p=>p.sold>0).sort((a,b)=>b.sold-a.sold);
+  document.getElementById('sum-sold').innerHTML=sold.length?sold.map(p=>`<div class="sum-row"><div class="sum-name">${esc(p.name)}</div><div class="sum-s">${p.sold}×</div><div class="sum-c">+${p.sold*S.price} €</div></div>`).join(''):'<div class="empty" style="padding:.4rem 0">Aucune vente encore</div>';
+  const rest=S.products.filter(p=>remaining(p)>0);
+  document.getElementById('sum-rest').innerHTML=rest.length?rest.map(p=>`<div class="sum-row"><div class="sum-name">${esc(p.name)}</div><div class="sum-r">${remaining(p)} restant${remaining(p)>1?'s':''}</div></div>`).join(''):'<div class="empty" style="padding:.4rem 0;color:var(--green)">🎉 Tout vendu !</div>';
+}
+function goTab(t){['setup','sell','summary'].forEach(x=>{document.getElementById('tab-'+x).classList.toggle('active',x===t);document.getElementById('page-'+x).classList.toggle('active',x===t)});if(t==='sell')renderSell();if(t==='summary')renderSummary();}
+function resetAll(){if(!confirm('Tout effacer ?')) return;S={eventName:'',price:35,updatedAt:Date.now(),updatedBy:'local',products:[]};saveLocal();document.getElementById('ev-name').value='';document.getElementById('ev-price').value='35';buildQuick();renderSetup();refreshNav();showToast('Remis à zéro ✓')}
+let toastTimer;function showToast(m){clearTimeout(toastTimer);const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');toastTimer=setTimeout(()=>t.classList.remove('show'),2100)}
+
+document.getElementById('ev-name').addEventListener('input',e=>{S.eventName=e.target.value;touch();refreshNav()});
+document.getElementById('ev-price').addEventListener('input',e=>{S.price=parseFloat(e.target.value)||35;touch();refreshNav()});
+document.getElementById('btn-custom-add').addEventListener('click',addCustom);
+document.getElementById('custom-name').addEventListener('keydown',e=>{if(e.key==='Enter') addCustom()});
+document.getElementById('btn-start').addEventListener('click',startSell);
+document.getElementById('btn-reset').addEventListener('click',resetAll);
+
+load();buildQuick();renderSetup();refreshNav();
+</script>
+</body>
+</html>

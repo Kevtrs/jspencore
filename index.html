@@ -65,6 +65,10 @@ body{max-width:980px;margin:0 auto;min-height:100vh}
 .log{border:1px solid var(--line);border-radius:12px;background:#fff;padding:10px;margin-bottom:8px;display:flex;gap:8px;align-items:center}
 .log-main{flex:1}.log-t{font-weight:800;font-size:14px}.log-s{font-size:12px;color:#64748b}.badge{font-size:11px;font-weight:800;padding:4px 8px;border-radius:999px;background:#fee2e2;color:#b91c1c}
 .ai{background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:12px;color:#1e3a8a;line-height:1.45;font-size:14px}
+.modal-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;padding:18px;z-index:9999}
+.modal{width:min(520px,100%);background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 16px 40px rgba(2,8,23,.3)}
+.modal-title{font-size:18px;font-weight:900;margin-bottom:6px}
+.modal-text{color:#475569;font-size:14px;line-height:1.4;margin-bottom:12px}
 
 .empty{text-align:center;color:#94a3b8;padding:26px 12px}
 .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(120px);background:#111827;color:#fff;padding:10px 14px;border-radius:999px;font-size:13px;font-weight:800;transition:transform .28s;z-index:999}.toast.show{transform:translateX(-50%) translateY(0)}
@@ -146,8 +150,11 @@ body{max-width:980px;margin:0 auto;min-height:100vh}
 
   <div class="card">
     <div class="sec">Gestion événement</div>
-    <button class="btn btn-ghost" type="button" onclick="closeEvent()">🏁 Clôturer l'événement</button>
-    <div style="font-size:12px;color:#64748b;font-weight:700;margin-top:7px" id="event-status">Événement ouvert</div>
+    <div class="stack">
+      <button class="btn btn-ghost grow" type="button" onclick="closeDay()">🔒 Clôturer la journée</button>
+      <button class="btn btn-ghost grow" type="button" onclick="closeEvent()">🏁 Clôturer l'événement</button>
+    </div>
+    <div style="font-size:12px;color:#64748b;font-weight:700;margin-top:7px" id="event-status">Événement ouvert · Jour 1</div>
   </div>
 
   <div class="card"><div class="sec">Ventes par cadre</div><div id="sum-sold"></div></div>
@@ -156,6 +163,10 @@ body{max-width:980px;margin:0 auto;min-height:100vh}
 
   <div class="card">
     <div class="sec">IA locale simple</div>
+    <div class="stack" style="margin-bottom:8px">
+      <input class="inp grow" id="ai-sales-count" type="number" min="0" placeholder="Nombre de ventes (observé terrain)" />
+      <input class="inp grow" id="ai-basket" type="number" min="0" step="0.01" placeholder="Panier moyen (€)" />
+    </div>
     <div class="ai" id="ai-advice">Clique sur "Analyser" pour un conseil automatique.</div>
     <button class="btn btn-ghost" style="margin-top:8px" type="button" onclick="generateLocalAiAdvice()">🤖 Analyser</button>
   </div>
@@ -164,6 +175,16 @@ body{max-width:980px;margin:0 auto;min-height:100vh}
 </div>
 
 <div class="toast" id="toast"></div>
+<div class="modal-backdrop" id="export-modal">
+  <div class="modal">
+    <div class="modal-title">Clôture enregistrée</div>
+    <div class="modal-text" id="export-modal-text">Tu peux exporter les données maintenant.</div>
+    <div class="stack">
+      <button class="btn btn-red grow" type="button" id="modal-export-btn" onclick="exportEventCsv()">📄 Export CSV</button>
+      <button class="btn btn-ghost grow" type="button" onclick="closeExportModal()">Fermer</button>
+    </div>
+  </div>
+</div>
 
 <script>
 const KEY='lf4_ipad_v3';
@@ -176,7 +197,7 @@ const CATALOG={
 const ICONS={'F1 — Casques':'🏎️','MotoGP — Casques':'🏍️','Calendriers & Circuits':'📅','Auto':'🚗'};
 const memStore={};
 const safeStore={get(k,f){try{const raw=localStorage.getItem(k);return raw?JSON.parse(raw):f}catch(_){return memStore[k]||f}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(_){memStore[k]=v}}};
-let S={eventName:'',price:35,eventClosed:false,products:[],salesLog:[],nextProductId:1,nextLogId:1,sellFilter:'ALL'};
+let S={eventName:'',price:35,currentDay:1,eventClosed:false,products:[],salesLog:[],dayClosures:[],nextProductId:1,nextLogId:1,sellFilter:'ALL'};
 
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
 const save=()=>safeStore.set(KEY,S);
@@ -186,8 +207,10 @@ const soldEvent=()=>S.salesLog.filter(l=>l.active).length;
 const caEvent=()=>soldEvent()*S.price;
 const remaining=p=>Math.max(0,totalStock(p)-totalSoldProduct(p));
 const totalRem=()=>S.products.reduce((a,p)=>a+remaining(p),0);
-function load(){S=safeStore.get(KEY,S);if(!S.nextProductId)S.nextProductId=1;if(!S.nextLogId)S.nextLogId=1;if(!S.sellFilter)S.sellFilter='ALL';}
+function load(){S=safeStore.get(KEY,S);if(!S.nextProductId)S.nextProductId=1;if(!S.nextLogId)S.nextLogId=1;if(!S.sellFilter)S.sellFilter='ALL';if(!S.currentDay)S.currentDay=1;if(!S.dayClosures)S.dayClosures=[];}
 function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2100)}
+function openExportModal(message,allowExport){document.getElementById('export-modal-text').textContent=message;document.getElementById('modal-export-btn').disabled=!allowExport;document.getElementById('export-modal').style.display='flex';}
+function closeExportModal(){document.getElementById('export-modal').style.display='none';}
 
 function refreshNav(){
   document.getElementById('nav-event').textContent=S.eventName||'Événement';
@@ -195,7 +218,7 @@ function refreshNav(){
   document.getElementById('nav-sold').textContent=`${soldEvent()} vendu${soldEvent()>1?'s':''}`;
   document.getElementById('nav-stock').textContent=`📦 ${totalRem()} restant${totalRem()>1?'s':''}`;
   document.getElementById('sum-event').textContent=`${caEvent()} €`;
-  document.getElementById('event-status').textContent=S.eventClosed?'Événement clôturé':'Événement ouvert';
+  document.getElementById('event-status').textContent=`${S.eventClosed?'Événement clôturé':'Événement ouvert'} · Jour ${S.currentDay}`;
   document.getElementById('btn-export').disabled=!S.eventClosed;
 }
 
@@ -256,7 +279,20 @@ function startSell(){
 function sell(id){if(S.eventClosed){showToast('Événement clôturé');return;}const p=S.products.find(x=>x.id===id);if(!p||remaining(p)<=0)return;S.salesLog.push({id:S.nextLogId++,productId:p.id,name:p.name,price:S.price,ts:Date.now(),active:true});save();refreshNav();renderSell();renderSummary();}
 function undoLastProductSale(productId){const last=[...S.salesLog].reverse().find(l=>l.active&&l.productId===productId);if(!last){showToast('Aucune vente à annuler');return;}last.active=false;save();refreshNav();renderSell();renderSummary();}
 function undoSell(logId){const e=S.salesLog.find(l=>l.id===logId);if(!e||!e.active)return;e.active=false;save();refreshNav();renderSell();renderSummary();}
-function closeEvent(){if(S.eventClosed){showToast('Déjà clôturé');return;}if(!confirm('Clôturer l\'événement ? Les ventes seront bloquées.'))return;S.eventClosed=true;save();refreshNav();renderSell();showToast('Événement clôturé 🏁');}
+function closeDay(){
+  if(S.eventClosed){showToast('Événement déjà clôturé');return;}
+  if(!confirm(`Clôturer le jour ${S.currentDay} ?`)) return;
+  S.dayClosures.push({day:S.currentDay,closedAt:Date.now(),sales:soldEvent(),ca:caEvent()});
+  S.currentDay+=1;
+  save();refreshNav();renderSummary();openExportModal(`Jour ${S.currentDay-1} clôturé. Continue sur le jour ${S.currentDay}.`,false);
+}
+function closeEvent(){
+  if(S.eventClosed){showToast('Déjà clôturé');return;}
+  if(!confirm('Clôturer l\\'événement ? Les ventes seront bloquées.'))return;
+  S.eventClosed=true;
+  save();refreshNav();renderSell();
+  openExportModal('Événement clôturé. Tu peux exporter le CSV final.',true);
+}
 
 function exportEventCsv(){
   if(!S.eventClosed){showToast('Clôture l\'événement avant export');return;}
@@ -298,18 +334,28 @@ function renderSummary(){
 }
 
 function generateLocalAiAdvice(){
+  const salesInput=Math.max(0,parseInt(document.getElementById('ai-sales-count').value||'0',10));
+  const basketInput=Math.max(0,parseFloat(document.getElementById('ai-basket').value||'0'));
   const top=[...S.products].sort((a,b)=>totalSoldProduct(b)-totalSoldProduct(a)).slice(0,3);
   const low=S.products.filter(p=>remaining(p)<=2).map(p=>p.name);
   const lines=[];
-  if(soldEvent()===0){lines.push('Aucune vente pour le moment. Mets 2 catégories les plus demandées en premier.');}
-  else{lines.push(`Top ventes: ${top.map(p=>`${p.name} (${totalSoldProduct(p)})`).join(', ')||'aucune'}.`);lines.push(`CA actuel: ${caEvent()} € pour ${soldEvent()} ventes.`);}
+  const observedCa = salesInput>0&&basketInput>0 ? (salesInput*basketInput) : null;
+  if(soldEvent()===0){lines.push('Aucune vente enregistrée dans l’app. Mets 2 catégories les plus demandées en premier écran.');}
+  else{lines.push(`Top ventes app: ${top.map(p=>`${p.name} (${totalSoldProduct(p)})`).join(', ')||'aucune'}.`);lines.push(`CA app: ${caEvent()} € pour ${soldEvent()} ventes.`);}
+  if(observedCa!==null){
+    const gap = observedCa - caEvent();
+    lines.push(`Terrain saisi: ${salesInput} ventes × ${basketInput.toFixed(2)} € = ${observedCa.toFixed(2)} €.`);
+    lines.push(gap>0 ? `Écart positif terrain/app: +${gap.toFixed(2)} €. Vérifie si des ventes n'ont pas été saisies.` : `Écart terrain/app: ${gap.toFixed(2)} €.`);
+  }else{
+    lines.push('Astuce: renseigne \"Nombre de ventes\" et \"Panier moyen\" pour une analyse plus précise.');
+  }
   lines.push(low.length?`Stock faible: ${low.join(', ')}.`:'Aucun stock critique (<=2).');
-  lines.push('Conseil: garde les catégories les plus actives visibles pour accélérer les ventes.');
+  lines.push('Plan action: mets en avant la meilleure catégorie, prépare 2 produits de secours, et vérifie le stock faible avant le rush.');
   document.getElementById('ai-advice').textContent=lines.join(' ');
 }
 
 function goTab(t){['setup','sell','summary'].forEach(x=>{document.getElementById('tab-'+x).classList.toggle('active',x===t);document.getElementById('page-'+x).classList.toggle('active',x===t)});if(t==='sell')renderSell();if(t==='summary')renderSummary();}
-function resetAll(){if(!confirm('Tout effacer ?'))return;S={eventName:'',price:35,eventClosed:false,products:[],salesLog:[],nextProductId:1,nextLogId:1,sellFilter:'ALL'};save();buildQuick();renderSetup();renderSell();renderSummary();refreshNav();document.getElementById('ai-advice').textContent='Clique sur "Analyser" pour un conseil automatique.';showToast('Remis à zéro ✓');}
+function resetAll(){if(!confirm('Tout effacer ?'))return;S={eventName:'',price:35,currentDay:1,eventClosed:false,products:[],salesLog:[],dayClosures:[],nextProductId:1,nextLogId:1,sellFilter:'ALL'};save();buildQuick();renderSetup();renderSell();renderSummary();refreshNav();document.getElementById('ai-advice').textContent='Clique sur \"Analyser\" pour un conseil automatique.';document.getElementById('ai-sales-count').value='';document.getElementById('ai-basket').value='';showToast('Remis à zéro ✓');}
 
 // events
 document.getElementById('ev-name').addEventListener('input',e=>{S.eventName=e.target.value;save();refreshNav();});

@@ -137,6 +137,17 @@ body{max-width:980px;margin:0 auto;min-height:100vh}
 </div>
 
 <div class="page" id="page-sell">
+  <div class="card" style="margin-bottom:10px">
+    <div class="stack">
+      <input class="inp grow" id="sell-search" type="text" placeholder="Rechercher un cadre..." />
+      <button class="btn btn-ghost" type="button" id="btn-clear-sell-search">Effacer</button>
+    </div>
+    <div class="stack" style="margin-top:8px">
+      <button class="btn btn-ghost" type="button" id="btn-stockmode-all">Tous stocks</button>
+      <button class="btn btn-ghost" type="button" id="btn-stockmode-low">Stock faible (≤2)</button>
+      <button class="btn btn-ghost" type="button" id="btn-stockmode-out">Épuisés</button>
+    </div>
+  </div>
   <div class="filter-grid" id="sell-filter"></div>
   <div id="sell-list" style="margin-top:10px"></div>
   <div class="empty" id="sell-empty" style="display:none">📦<br>Configurez le stock d'abord</div>
@@ -197,7 +208,7 @@ const CATALOG={
 const ICONS={'F1 — Casques':'🏎️','MotoGP — Casques':'🏍️','Calendriers & Circuits':'📅','Auto':'🚗'};
 const memStore={};
 const safeStore={get(k,f){try{const raw=localStorage.getItem(k);return raw?JSON.parse(raw):f}catch(_){return memStore[k]||f}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(_){memStore[k]=v}}};
-let S={eventName:'',price:35,currentDay:1,eventClosed:false,products:[],salesLog:[],dayClosures:[],nextProductId:1,nextLogId:1,sellFilter:'ALL'};
+let S={eventName:'',price:35,currentDay:1,eventClosed:false,products:[],salesLog:[],dayClosures:[],nextProductId:1,nextLogId:1,sellFilter:'ALL',sellQuery:'',sellStockMode:'ALL'};
 
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
 const save=()=>safeStore.set(KEY,S);
@@ -207,7 +218,7 @@ const soldEvent=()=>S.salesLog.filter(l=>l.active).length;
 const caEvent=()=>soldEvent()*S.price;
 const remaining=p=>Math.max(0,totalStock(p)-totalSoldProduct(p));
 const totalRem=()=>S.products.reduce((a,p)=>a+remaining(p),0);
-function load(){S=safeStore.get(KEY,S);if(!S.nextProductId)S.nextProductId=1;if(!S.nextLogId)S.nextLogId=1;if(!S.sellFilter)S.sellFilter='ALL';if(!S.currentDay)S.currentDay=1;if(!S.dayClosures)S.dayClosures=[];}
+function load(){S=safeStore.get(KEY,S);if(!S.nextProductId)S.nextProductId=1;if(!S.nextLogId)S.nextLogId=1;if(!S.sellFilter)S.sellFilter='ALL';if(!S.currentDay)S.currentDay=1;if(!S.dayClosures)S.dayClosures=[];if(typeof S.sellQuery!=='string')S.sellQuery='';if(!S.sellStockMode)S.sellStockMode='ALL';}
 function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2100)}
 function openExportModal(message,allowExport){document.getElementById('export-modal-text').textContent=message;document.getElementById('modal-export-btn').disabled=!allowExport;document.getElementById('export-modal').style.display='flex';}
 function closeExportModal(){document.getElementById('export-modal').style.display='none';}
@@ -320,12 +331,20 @@ function setSellFilter(cat){
   }
 }
 
+function setSellStockMode(mode){S.sellStockMode=mode;save();renderSell();}
+function updateSellStockModeButtons(){[['btn-stockmode-all','ALL'],['btn-stockmode-low','LOW'],['btn-stockmode-out','OUT']].forEach(([id,mode])=>{const btn=document.getElementById(id);if(!btn)return;btn.style.borderColor=S.sellStockMode===mode?'#16a34a':'';btn.style.color=S.sellStockMode===mode?'#16a34a':'';});}
+
 function renderSell(){
   renderSellFilter();
   const list=document.getElementById('sell-list'),empty=document.getElementById('sell-empty');
   if(!S.products.length){list.innerHTML='';empty.style.display='block';return;}
   empty.style.display='none';
-  const visible=S.products.filter(p=>S.sellFilter==='ALL'||p.cat===S.sellFilter);
+  const query=(S.sellQuery||'').trim().toLowerCase();
+  let visible=S.products.filter(p=>S.sellFilter==='ALL'||p.cat===S.sellFilter);
+  if(query){visible=visible.filter(p=>p.name.toLowerCase().includes(query));}
+  if(S.sellStockMode==='LOW'){visible=visible.filter(p=>{const rem=remaining(p);return rem>0&&rem<=2;});}
+  if(S.sellStockMode==='OUT'){visible=visible.filter(p=>remaining(p)===0);}
+  updateSellStockModeButtons();
   if(!visible.length){list.innerHTML='<div class="empty">Aucun cadre dans ce filtre</div>';return;}
   list.innerHTML=visible.map(p=>{const rem=remaining(p),sold=totalSoldProduct(p),sc=rem===0?'out':rem<=3?'low':'',st=rem===0?'⛔ ÉPUISÉ':`${rem} restant${rem>1?'s':''}`;return `<div class="sell"><div><div class="sell-name">${esc(p.name)}</div><div class="sell-sub ${sc}">${st} · ${sold} vendu${sold>1?'s':''}</div></div><div class="sell-controls"><button class="undo" type="button" onclick="undoLastProductSale(${p.id})">↺</button><button class="plus" type="button" onclick="sell(${p.id})" ${rem===0||S.eventClosed?'disabled':''}>+</button></div></div>`;}).join('');
 }
@@ -362,7 +381,7 @@ function generateLocalAiAdvice(){
 }
 
 function goTab(t){['setup','sell','summary'].forEach(x=>{document.getElementById('tab-'+x).classList.toggle('active',x===t);document.getElementById('page-'+x).classList.toggle('active',x===t)});if(t==='sell')renderSell();if(t==='summary')renderSummary();}
-function resetAll(){if(!confirm('Tout effacer ?'))return;S={eventName:'',price:35,currentDay:1,eventClosed:false,products:[],salesLog:[],dayClosures:[],nextProductId:1,nextLogId:1,sellFilter:'ALL'};save();buildQuick();renderSetup();renderSell();renderSummary();refreshNav();document.getElementById('ai-advice').textContent='Clique sur \"Analyser\" pour un conseil automatique.';document.getElementById('ai-sales-count').value='';document.getElementById('ai-basket').value='';showToast('Remis à zéro ✓');}
+function resetAll(){if(!confirm('Tout effacer ?'))return;S={eventName:'',price:35,currentDay:1,eventClosed:false,products:[],salesLog:[],dayClosures:[],nextProductId:1,nextLogId:1,sellFilter:'ALL',sellQuery:'',sellStockMode:'ALL'};save();buildQuick();renderSetup();renderSell();renderSummary();refreshNav();document.getElementById('ai-advice').textContent='Clique sur \"Analyser\" pour un conseil automatique.';document.getElementById('ai-sales-count').value='';document.getElementById('ai-basket').value='';document.getElementById('sell-search').value='';showToast('Remis à zéro ✓');}
 
 // events
 document.getElementById('ev-name').addEventListener('input',e=>{S.eventName=e.target.value;save();refreshNav();});
@@ -371,8 +390,13 @@ document.getElementById('btn-custom-add').addEventListener('click',addCustom);
 document.getElementById('custom-name').addEventListener('keydown',e=>{if(e.key==='Enter')addCustom();});
 document.getElementById('btn-start').addEventListener('click',startSell);
 document.getElementById('btn-reset').addEventListener('click',resetAll);
+document.getElementById('sell-search').addEventListener('input',e=>{S.sellQuery=e.target.value;save();renderSell();});
+document.getElementById('btn-clear-sell-search').addEventListener('click',()=>{S.sellQuery='';document.getElementById('sell-search').value='';save();renderSell();});
+document.getElementById('btn-stockmode-all').addEventListener('click',()=>setSellStockMode('ALL'));
+document.getElementById('btn-stockmode-low').addEventListener('click',()=>setSellStockMode('LOW'));
+document.getElementById('btn-stockmode-out').addEventListener('click',()=>setSellStockMode('OUT'));
 
-load();document.getElementById('ev-name').value=S.eventName||'';document.getElementById('ev-price').value=S.price||35;buildQuick();renderSetup();renderSell();renderSummary();refreshNav();
+load();document.getElementById('ev-name').value=S.eventName||'';document.getElementById('ev-price').value=S.price||35;document.getElementById('sell-search').value=S.sellQuery||'';buildQuick();renderSetup();renderSell();renderSummary();refreshNav();
 </script>
 </body>
 </html>

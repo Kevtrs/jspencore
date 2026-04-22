@@ -137,11 +137,6 @@ body{max-width:980px;margin:0 auto;min-height:100vh}
 </div>
 
 <div class="page" id="page-sell">
-  <div class="card" id="sell-bar" style="display:none">
-    <div style="font-weight:900;font-size:17px" id="sell-ev-name"></div>
-    <div style="font-size:12px;color:#64748b;font-weight:700;margin-top:2px" id="sell-ev-stats"></div>
-  </div>
-
   <div class="filter-grid" id="sell-filter"></div>
   <div id="sell-list" style="margin-top:10px"></div>
   <div class="empty" id="sell-empty" style="display:none">📦<br>Configurez le stock d'abord</div>
@@ -327,11 +322,9 @@ function setSellFilter(cat){
 
 function renderSell(){
   renderSellFilter();
-  const list=document.getElementById('sell-list'),empty=document.getElementById('sell-empty'),bar=document.getElementById('sell-bar');
-  if(!S.products.length){list.innerHTML='';empty.style.display='block';bar.style.display='none';return;}
-  empty.style.display='none';bar.style.display='block';
-  document.getElementById('sell-ev-name').textContent=S.eventName||'Événement';
-  document.getElementById('sell-ev-stats').textContent=`${soldEvent()} vendu${soldEvent()>1?'s':''} · ${caEvent()} €`;
+  const list=document.getElementById('sell-list'),empty=document.getElementById('sell-empty');
+  if(!S.products.length){list.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
   const visible=S.products.filter(p=>S.sellFilter==='ALL'||p.cat===S.sellFilter);
   if(!visible.length){list.innerHTML='<div class="empty">Aucun cadre dans ce filtre</div>';return;}
   list.innerHTML=visible.map(p=>{const rem=remaining(p),sold=totalSoldProduct(p),sc=rem===0?'out':rem<=3?'low':'',st=rem===0?'⛔ ÉPUISÉ':`${rem} restant${rem>1?'s':''}`;return `<div class="sell"><div><div class="sell-name">${esc(p.name)}</div><div class="sell-sub ${sc}">${st} · ${sold} vendu${sold>1?'s':''}</div></div><div class="sell-controls"><button class="undo" type="button" onclick="undoLastProductSale(${p.id})">↺</button><button class="plus" type="button" onclick="sell(${p.id})" ${rem===0||S.eventClosed?'disabled':''}>+</button></div></div>`;}).join('');

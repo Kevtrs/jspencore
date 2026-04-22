@@ -3,829 +3,482 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>LaFabrik — Ventes Circuit</title>
+<title>LaFabrik — Circuit</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-
 :root {
-  --red: #e8001d;
-  --dark: #0f0f0f;
-  --gray: #1a1a1a;
-  --light: #f5f5f0;
-  --border: #e8e8e8;
-  --green: #22c55e;
-  --gold: #c9a84c;
+  --red:#e8001d; --dark:#111; --card:#1e1e1e; --border:#2a2a2a;
+  --text:#f0f0f0; --sub:#888; --green:#22c55e; --orange:#f97316; --gold:#c9a84c;
 }
-
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
-  background: var(--light);
-  color: #111;
-  min-height: 100vh;
-  max-width: 480px;
-  margin: 0 auto;
+  font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;
+  background:var(--dark); color:var(--text);
+  max-width:480px; margin:0 auto; min-height:100vh;
 }
-
-/* NAV */
 .nav {
-  background: var(--dark);
-  padding: 1rem 1.25rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: sticky;
-  top: 0;
-  z-index: 100;
+  background:#000; padding:0.75rem 1.1rem;
+  display:flex; align-items:center; justify-content:space-between;
+  position:sticky; top:0; z-index:100;
+  border-bottom:1px solid var(--border);
 }
-
-.nav-brand {
-  font-size: 1rem;
-  font-weight: 900;
-  color: #fff;
-  letter-spacing: -0.02em;
-}
-
-.nav-brand span { color: var(--red); }
-
-.nav-event {
-  font-size: 11px;
-  font-weight: 600;
-  color: #666;
-  letter-spacing: 0.05em;
-  max-width: 150px;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-  text-align: right;
-}
-
-/* TABS */
+.nav-brand { font-size:1.1rem; font-weight:900; color:#fff; letter-spacing:-0.02em; }
+.nav-brand em { color:var(--red); font-style:normal; }
+.nav-stats { text-align:right; }
+.nav-ca { font-size:1.2rem; font-weight:900; color:var(--red); line-height:1; }
+.nav-sold { font-size:10px; font-weight:600; color:var(--sub); letter-spacing:0.05em; }
+.nav-stock { font-size:10px; color:var(--gold); font-weight:700; margin-top:1px; }
 .tabs {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  background: #fff;
-  border-bottom: 1px solid var(--border);
-  position: sticky;
-  top: 57px;
-  z-index: 99;
+  display:grid; grid-template-columns:repeat(3,1fr);
+  background:#000; border-bottom:1px solid var(--border);
+  position:sticky; top:61px; z-index:99;
 }
-
 .tab {
-  padding: 0.85rem 0;
-  text-align: center;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #bbb;
-  cursor: pointer;
-  border-bottom: 2.5px solid transparent;
-  transition: all 0.2s;
+  padding:0.75rem 0; text-align:center; font-size:11px; font-weight:700;
+  letter-spacing:0.06em; text-transform:uppercase; color:var(--sub);
+  cursor:pointer; border-bottom:2.5px solid transparent; transition:all 0.15s;
 }
-
-.tab.active { color: var(--red); border-bottom-color: var(--red); }
-
-/* PAGES */
-.page { display: none; padding: 1.25rem; }
-.page.active { display: block; }
-
-/* SECTION TITLE */
-.section-title {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: #bbb;
-  margin-bottom: 0.75rem;
+.tab.active { color:var(--red); border-bottom-color:var(--red); }
+.page { display:none; padding:0.9rem; padding-bottom:4rem; }
+.page.active { display:block; }
+.sec { font-size:10px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:var(--sub); margin:0.9rem 0 0.4rem; }
+.card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:1.1rem; margin-bottom:0.6rem; }
+.inp {
+  width:100%; padding:0.8rem 1rem; border:1.5px solid var(--border);
+  border-radius:10px; font-size:0.95rem; font-family:inherit;
+  background:#1a1a1a; color:var(--text); -webkit-appearance:none;
 }
-
-/* CARDS */
-.card {
-  background: #fff;
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 1.25rem;
-  margin-bottom: 0.75rem;
+.inp:focus { outline:none; border-color:var(--red); }
+.inp-label { font-size:10px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--sub); margin-bottom:0.35rem; display:block; }
+.q-grid { display:flex; flex-wrap:wrap; gap:0.4rem; }
+.qbtn {
+  font-size:12px; font-weight:700; padding:0.5rem 0.85rem; border-radius:8px;
+  border:1.5px solid var(--border); background:transparent; color:var(--sub);
+  cursor:pointer; font-family:inherit; transition:all 0.15s;
 }
-
-/* SETUP PAGE */
-.input-group { margin-bottom: 1rem; }
-.input-label {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #aaa;
-  margin-bottom: 0.4rem;
-  display: block;
+.qbtn.on { border-color:var(--green); color:var(--green); background:rgba(34,197,94,0.08); }
+.cat-title {
+  font-size:11px; font-weight:800; letter-spacing:0.12em; text-transform:uppercase;
+  color:var(--text); padding:0.5rem 0 0.4rem; border-bottom:1px solid var(--border);
+  margin-bottom:0.5rem; display:flex; align-items:center; gap:0.4rem;
 }
-
-.input {
-  width: 100%;
-  padding: 0.85rem 1rem;
-  border: 1.5px solid var(--border);
-  border-radius: 10px;
-  font-size: 0.95rem;
-  font-family: inherit;
-  background: #fafafa;
-  color: #111;
-  transition: border-color 0.2s;
-  -webkit-appearance: none;
-}
-
-.input:focus { outline: none; border-color: var(--red); background: #fff; }
-
-/* PRODUCT SETUP */
-.product-setup-item {
-  background: #fff;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 1rem;
-  margin-bottom: 0.6rem;
-  display: grid;
-  grid-template-columns: 1fr auto auto;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.product-setup-name {
-  font-size: 0.88rem;
-  font-weight: 700;
-  color: #111;
-}
-
-.qty-control {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: #f5f5f0;
-  border-radius: 8px;
-  padding: 4px;
-}
-
-.qty-btn {
-  width: 30px;
-  height: 30px;
-  border: none;
-  border-radius: 6px;
-  background: #fff;
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #111;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.15s;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
-
-.qty-btn:active { transform: scale(0.9); background: #f0f0f0; }
-
-.qty-num {
-  font-size: 1rem;
-  font-weight: 800;
-  color: #111;
-  min-width: 28px;
-  text-align: center;
-}
-
-.delete-btn {
-  width: 30px;
-  height: 30px;
-  border: none;
-  border-radius: 8px;
-  background: rgba(232,0,29,0.08);
-  color: var(--red);
-  font-size: 1rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.delete-btn:active { background: rgba(232,0,29,0.2); }
-
-/* ADD PRODUCT FORM */
-.add-form {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-/* BOUTONS */
-.btn {
-  width: 100%;
-  padding: 1rem;
-  border: none;
-  border-radius: 12px;
-  font-size: 0.95rem;
-  font-weight: 800;
-  letter-spacing: 0.05em;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.btn-primary { background: var(--red); color: #fff; }
-.btn-primary:active { background: #c50019; transform: scale(0.98); }
-
-.btn-dark { background: var(--dark); color: #fff; }
-.btn-dark:active { background: #333; transform: scale(0.98); }
-
-.btn-sm {
-  padding: 0.75rem 1rem;
-  border-radius: 10px;
-  font-size: 0.85rem;
-  font-weight: 800;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s;
-  white-space: nowrap;
-}
-
-.btn-sm-red { background: var(--red); color: #fff; }
-.btn-sm-outline { background: transparent; border: 1.5px solid var(--border); color: #888; }
-
-/* VENTE PAGE */
+.prod-row { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:0.9rem; margin-bottom:0.5rem; }
+.prod-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:0.6rem; }
+.prod-name { font-size:0.9rem; font-weight:800; color:var(--text); }
+.del-btn { width:28px; height:28px; border:none; border-radius:7px; background:rgba(232,0,29,0.12); color:var(--red); cursor:pointer; font-size:0.9rem; display:flex; align-items:center; justify-content:center; }
+.stock-line { display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap; }
+.stk-group { display:flex; align-items:center; gap:0.35rem; background:#161616; border:1px solid var(--border); border-radius:9px; padding:5px 8px; }
+.stk-lbl { font-size:9px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--sub); }
+.qb { width:32px; height:32px; border:none; border-radius:7px; background:#2a2a2a; color:var(--text); font-size:1.2rem; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.12s; }
+.qb:active { background:#3a3a3a; transform:scale(0.88); }
+.qnum { font-size:1rem; font-weight:900; color:var(--text); min-width:28px; text-align:center; }
+.tot-lbl { font-size:12px; font-weight:800; color:var(--gold); margin-left:auto; }
 .sell-card {
-  background: #fff;
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 1rem 1.25rem;
-  margin-bottom: 0.6rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
+  background:var(--card); border:1px solid var(--border); border-radius:14px;
+  padding:0.85rem 1rem; margin-bottom:0.5rem;
+  display:flex; align-items:center; justify-content:space-between; gap:0.75rem;
 }
-
-.sell-info { flex: 1; min-width: 0; }
-.sell-name {
-  font-size: 0.92rem;
-  font-weight: 800;
-  color: #111;
-  margin-bottom: 0.2rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.s-info { flex:1; min-width:0; }
+.s-name { font-size:0.92rem; font-weight:800; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:2px; }
+.s-stock { font-size:11px; font-weight:600; color:var(--sub); }
+.s-stock.low { color:var(--orange); }
+.s-stock.out { color:var(--red); }
+.s-right { display:flex; align-items:center; gap:0.5rem; flex-shrink:0; }
+.sold-pill { font-size:12px; font-weight:800; color:#fff; background:var(--red); border-radius:8px; padding:3px 9px; min-width:28px; text-align:center; }
+.sell-btn {
+  width:58px; height:58px; border-radius:14px; border:none;
+  background:var(--red); color:#fff; font-size:1.9rem; font-weight:900;
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
+  box-shadow:0 4px 16px rgba(232,0,29,0.4); transition:all 0.12s; flex-shrink:0;
 }
-
-.sell-stock {
-  font-size: 11px;
-  font-weight: 600;
-  color: #bbb;
-}
-
-.sell-stock.low { color: #f97316; }
-.sell-stock.out { color: var(--red); }
-
-.sell-controls {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-shrink: 0;
-}
-
-.big-sell-btn {
-  width: 52px;
-  height: 52px;
-  border-radius: 12px;
-  border: none;
-  background: var(--red);
-  color: #fff;
-  font-size: 1.6rem;
-  font-weight: 900;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.15s;
-  box-shadow: 0 3px 12px rgba(232,0,29,0.3);
-  flex-shrink: 0;
-}
-
-.big-sell-btn:active { transform: scale(0.88); box-shadow: none; }
-.big-sell-btn.disabled { background: #e0e0e0; box-shadow: none; cursor: not-allowed; }
-
-.undo-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  background: #f5f5f0;
-  color: #888;
-  font-size: 0.9rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.undo-btn:active { background: #e8e8e8; }
-
-/* RÉSUMÉ PAGE */
-.summary-total {
-  background: var(--dark);
-  border-radius: 16px;
-  padding: 1.5rem;
-  margin-bottom: 1rem;
-  color: #fff;
-  text-align: center;
-}
-
-.total-label { font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #666; margin-bottom: 0.5rem; }
-.total-amount { font-size: 3rem; font-weight: 900; color: #fff; line-height: 1; letter-spacing: -0.03em; }
-.total-units { font-size: 0.85rem; color: #555; margin-top: 0.4rem; }
-
-.summary-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.85rem 0;
-  border-bottom: 1px solid var(--border);
-  gap: 0.75rem;
-}
-
-.summary-row:last-child { border-bottom: none; }
-
-.summary-name {
-  font-size: 0.88rem;
-  font-weight: 700;
-  color: #111;
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.summary-sold {
-  font-size: 0.88rem;
-  font-weight: 800;
-  color: var(--red);
-  flex-shrink: 0;
-}
-
-.summary-remaining {
-  font-size: 0.82rem;
-  color: #bbb;
-  flex-shrink: 0;
-  min-width: 60px;
-  text-align: right;
-}
-
-/* TOASTS */
+.sell-btn:active { transform:scale(0.85); box-shadow:none; }
+.sell-btn:disabled { background:#2a2a2a; box-shadow:none; cursor:not-allowed; color:var(--sub); }
+.undo { width:36px; height:36px; border-radius:9px; border:1px solid var(--border); background:#1a1a1a; color:var(--sub); font-size:1rem; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.undo:active { background:var(--border); }
+.sum-hero { background:linear-gradient(135deg,#1a0005,#0f0f0f); border:1px solid rgba(232,0,29,0.2); border-radius:16px; padding:1.5rem; text-align:center; margin-bottom:1rem; }
+.sh-ca { font-size:3.5rem; font-weight:900; color:#fff; line-height:1; letter-spacing:-0.03em; }
+.sh-units { font-size:0.9rem; color:#555; margin-top:0.4rem; }
+.sum-row { display:flex; align-items:center; justify-content:space-between; padding:0.7rem 0; border-bottom:1px solid var(--border); gap:0.5rem; }
+.sum-row:last-child { border-bottom:none; }
+.sum-name { font-size:0.85rem; font-weight:700; color:var(--text); flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.sum-s { font-size:0.85rem; font-weight:800; color:var(--red); }
+.sum-c { font-size:0.82rem; font-weight:700; color:var(--green); }
+.sum-r { font-size:0.82rem; color:var(--sub); }
+.btn { width:100%; padding:1rem; border:none; border-radius:12px; font-size:0.95rem; font-weight:800; cursor:pointer; transition:all 0.15s; font-family:inherit; }
+.btn-red { background:var(--red); color:#fff; }
+.btn-red:active { background:#c50019; }
+.btn-outline { background:transparent; color:var(--sub); border:1px solid var(--border); margin-top:0.6rem; }
+.btn-sm-add { padding:0.6rem 1rem; border-radius:9px; font-size:12px; font-weight:700; border:1.5px solid var(--red); background:transparent; color:var(--red); cursor:pointer; font-family:inherit; white-space:nowrap; }
 .toast {
-  position: fixed;
-  bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%) translateY(100px);
-  background: var(--dark);
-  color: #fff;
-  padding: 0.75rem 1.25rem;
-  border-radius: 100px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
-  z-index: 999;
-  white-space: nowrap;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  position:fixed; bottom:1.5rem; left:50%;
+  transform:translateX(-50%) translateY(120px);
+  background:#fff; color:#111;
+  padding:0.65rem 1.25rem; border-radius:100px;
+  font-size:0.85rem; font-weight:700;
+  transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);
+  z-index:999; white-space:nowrap;
+  box-shadow:0 4px 20px rgba(0,0,0,0.5);
+  pointer-events:none;
 }
-
-.toast.show { transform: translateX(-50%) translateY(0); }
-
-/* EMPTY STATE */
-.empty {
-  text-align: center;
-  padding: 3rem 1rem;
-  color: #bbb;
-}
-
-.empty-icon { font-size: 3rem; margin-bottom: 0.75rem; }
-.empty-text { font-size: 0.9rem; line-height: 1.6; }
-
-/* RESET BTN */
-.reset-link {
-  font-size: 11px;
-  font-weight: 600;
-  color: #ccc;
-  text-align: center;
-  display: block;
-  margin-top: 1rem;
-  cursor: pointer;
-  padding: 0.5rem;
-}
+.toast.show { transform:translateX(-50%) translateY(0); }
+.empty { text-align:center; padding:2.5rem 1rem; color:var(--sub); font-size:0.9rem; }
 </style>
 </head>
 <body>
 
 <div class="nav">
-  <div class="nav-brand">La<span>Fabrik</span></div>
-  <div class="nav-event" id="nav-event-name">⚡ Prêt à vendre</div>
+  <div class="nav-brand">La<em>Fabrik</em></div>
+  <div class="nav-stats">
+    <div class="nav-ca" id="nav-ca">0 €</div>
+    <div class="nav-sold" id="nav-sold">0 vendu</div>
+    <div class="nav-stock" id="nav-stock">📦 0 restant</div>
+  </div>
 </div>
 
 <div class="tabs">
-  <button class="tab active" onclick="showTab('setup')" id="tab-setup" type="button">📦 Stock</button>
-  <button class="tab" onclick="showTab('sell')" id="tab-sell" type="button">🏁 Ventes</button>
-  <button class="tab" onclick="showTab('summary')" id="tab-summary" type="button">📊 Résumé</button>
+  <div class="tab active" id="tab-setup" onclick="goTab('setup')">📦 Stock</div>
+  <div class="tab" id="tab-sell" onclick="goTab('sell')">🏁 Ventes</div>
+  <div class="tab" id="tab-summary" onclick="goTab('summary')">📊 Résumé</div>
 </div>
 
+<!-- SETUP -->
 <div class="page active" id="page-setup">
-
   <div class="card">
-    <div class="section-title">Nom de l'événement</div>
-    <input class="input" type="text" id="event-name" placeholder="ex: Circuit de Nevers, Salon Moto Paris..." oninput="updateEventName()">
+    <label class="inp-label">Nom de l'événement</label>
+    <input class="inp" id="ev-name" placeholder="ex: GPFH 2026…">
   </div>
-
+  <div class="card" style="display:flex;align-items:center;gap:1rem">
+    <div style="flex:1">
+      <label class="inp-label">Prix unitaire</label>
+      <input class="inp" id="ev-price" type="number" value="35" min="1">
+    </div>
+    <div style="font-size:1.5rem;color:var(--sub);padding-top:1.2rem">€</div>
+  </div>
+  <div id="quick-blocks"></div>
   <div class="card">
-    <div class="section-title">Prix unitaire</div>
-    <div style="display:flex;align-items:center;gap:0.75rem">
-      <input class="input" type="number" id="unit-price" value="35" min="1" step="1" style="width:120px">
-      <span style="font-size:0.9rem;color:#888">€ par cadre</span>
+    <label class="inp-label">Ajouter un modèle manuellement</label>
+    <div style="display:flex;gap:0.5rem;margin-bottom:0.75rem">
+      <input class="inp" id="custom-name" placeholder="Nom du cadre…">
+      <button class="btn-sm-add" id="btn-custom-add">+ Ajouter</button>
     </div>
+    <label class="inp-label">Catégorie</label>
+    <select class="inp" id="custom-cat" style="padding:0.65rem 0.9rem">
+      <option>F1 — Casques</option>
+      <option>F1 — Calendriers &amp; Circuits</option>
+      <option>MotoGP — Casques</option>
+      <option>MotoGP — Calendriers &amp; Circuits</option>
+      <option>Auto</option>
+    </select>
   </div>
-
-  <div class="card">
-    <div class="section-title">Ajouter un cadre</div>
-    <div class="add-form">
-      <input class="input" type="text" id="new-product-name" placeholder="ex: Zarco Le Mans 2025" onkeydown="if(event.key==='Enter')addProduct()">
-      <button class="btn-sm btn-sm-red" onclick="addProduct()" type="button">+ Ajouter</button>
-    </div>
-
-    <div class="section-title" style="margin-top:0.5rem">Ajoute les plus courants rapidement</div>
-    <div style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:1rem" id="quick-add">
-      <button onclick="quickAdd('Senna')" class="btn-sm btn-sm-outline" type="button">+ Senna</button>
-      <button onclick="quickAdd('Verstappen')" class="btn-sm btn-sm-outline" type="button">+ Verstappen</button>
-      <button onclick="quickAdd('Leclerc')" class="btn-sm btn-sm-outline" type="button">+ Leclerc</button>
-      <button onclick="quickAdd('Hamilton')" class="btn-sm btn-sm-outline" type="button">+ Hamilton</button>
-      <button onclick="quickAdd('Schumacher')" class="btn-sm btn-sm-outline" type="button">+ Schumacher</button>
-      <button onclick="quickAdd('Gasly')" class="btn-sm btn-sm-outline" type="button">+ Gasly</button>
-      <button onclick="quickAdd('Norris')" class="btn-sm btn-sm-outline" type="button">+ Norris</button>
-      <button onclick="quickAdd('Zarco Le Mans')" class="btn-sm btn-sm-outline" type="button">+ Zarco Le Mans</button>
-      <button onclick="quickAdd('Zarco classique')" class="btn-sm btn-sm-outline" type="button">+ Zarco</button>
-      <button onclick="quickAdd('Marquez')" class="btn-sm btn-sm-outline" type="button">+ Marquez</button>
-      <button onclick="quickAdd('Rossi')" class="btn-sm btn-sm-outline" type="button">+ Rossi</button>
-      <button onclick="quickAdd('Quartararo')" class="btn-sm btn-sm-outline" type="button">+ Quartararo</button>
-    </div>
-  </div>
-
-  <div class="section-title">Votre stock — définissez les quantités</div>
-  <div id="product-list">
-    <div class="empty">
-      <div class="empty-icon">📦</div>
-      <div class="empty-text">Ajoutez vos cadres ci-dessus<br>puis définissez les quantités</div>
-    </div>
-  </div>
-
-  <button class="btn btn-dark" onclick="startSelling()" style="margin-top:1rem" type="button">🏁 DÉMARRER LES VENTES</button>
-  <button class="reset-link" onclick="resetAll()" type="button">↺ Tout recommencer</button>
+  <div class="sec">Stock défini</div>
+  <div id="stock-list"></div>
+  <button class="btn btn-red" id="btn-start" style="margin-top:0.5rem">🏁 DÉMARRER LES VENTES</button>
+  <button class="btn btn-outline" id="btn-reset">↺ Tout remettre à zéro</button>
 </div>
 
+<!-- SELL -->
 <div class="page" id="page-sell">
-
-  <div id="sell-event-header" style="margin-bottom:1rem;display:none">
-    <div style="font-size:1.1rem;font-weight:900;color:#111" id="sell-event-display"></div>
-    <div style="font-size:11px;color:#bbb;margin-top:2px" id="sell-stats-header">0 vendu — 0 €</div>
+  <div id="sell-bar" style="margin-bottom:0.75rem;display:none">
+    <div style="font-size:1rem;font-weight:900;color:var(--text)" id="sell-ev-name"></div>
+    <div style="font-size:11px;color:var(--sub);margin-top:2px" id="sell-ev-stats"></div>
   </div>
-
   <div id="sell-list"></div>
-
-  <div class="empty" id="sell-empty" style="display:none">
-    <div class="empty-icon">📦</div>
-    <div class="empty-text">Configurez d'abord votre stock<br>dans l'onglet Stock</div>
-  </div>
+  <div class="empty" id="sell-empty" style="display:none">📦<br>Configurez le stock d'abord</div>
 </div>
 
+<!-- SUMMARY -->
 <div class="page" id="page-summary">
-
-  <div class="summary-total" id="summary-total">
-    <div class="total-label">Chiffre d'affaires</div>
-    <div class="total-amount" id="total-ca">0 €</div>
-    <div class="total-units" id="total-units">0 cadre vendu</div>
+  <div class="sum-hero">
+    <div style="font-size:10px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#444;margin-bottom:0.4rem">Chiffre d'affaires</div>
+    <div class="sh-ca" id="sum-ca">0 €</div>
+    <div class="sh-units" id="sum-units">0 cadre vendu</div>
   </div>
-
   <div class="card">
-    <div class="section-title" style="margin-bottom:0">Détail par cadre</div>
-    <div id="summary-rows">
-      <div class="empty" style="padding:2rem 0">
-        <div class="empty-icon">📊</div>
-        <div class="empty-text">Aucune vente encore</div>
-      </div>
-    </div>
+    <div class="sec" style="margin-top:0">Ventes par cadre</div>
+    <div id="sum-sold"></div>
   </div>
-
-  <div class="card" style="margin-top:0.75rem">
-    <div class="section-title">Stock restant</div>
-    <div id="remaining-rows"></div>
+  <div class="card">
+    <div class="sec" style="margin-top:0">Stock restant</div>
+    <div id="sum-rest"></div>
   </div>
-
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-const STORAGE_KEY = 'lafabrik-event-v2';
+// STORAGE SAFE
+var store = (function(){
+  var mem = {};
+  try {
+    localStorage.setItem('_t','1'); localStorage.removeItem('_t');
+    return {
+      get: function(k){ try{var d=localStorage.getItem(k);return d?JSON.parse(d):null;}catch(e){return mem[k]||null;} },
+      set: function(k,v){ try{localStorage.setItem(k,JSON.stringify(v));}catch(e){mem[k]=v;} },
+      del: function(k){ try{localStorage.removeItem(k);}catch(e){delete mem[k];} }
+    };
+  } catch(e) {
+    return {
+      get: function(k){ return mem[k]||null; },
+      set: function(k,v){ mem[k]=v; },
+      del: function(k){ delete mem[k]; }
+    };
+  }
+})();
 
-let state = {
-  eventName: '',
-  unitPrice: 35,
-  nextId: 1,
-  products: [], // {id, name, stock, sold}
+var CATALOG = {
+  'F1 — Casques': ['Senna Casque','Schumacher Casque','Hamilton Casque','Leclerc Casque','Verstappen Casque','Norris Casque','Piastri Casque','Russel Casque','Antonelli Casque','Hadjar Casque','Gasly Casque'],
+  'F1 — Calendriers & Circuits': ['Calendrier F1 2026','Circuits de France','Dijon Circuits'],
+  'MotoGP — Casques': ['Marquez Casque','Marquez 93','Rossi Casque','Rossi 46','Zarco','Quartararo'],
+  'MotoGP — Calendriers & Circuits': ['Calendrier MotoGP 2026','Île de Man'],
+  'Auto': ['Porsche','Nurburgring','Alpine','Ferrari','Ducati']
 };
+var ICONS = {'F1 — Casques':'🏎️','F1 — Calendriers & Circuits':'📅','MotoGP — Casques':'🏍️','MotoGP — Calendriers & Circuits':'📅','Auto':'🚗'};
 
-function escapeHtml(text) {
-  const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
-  return String(text).replace(/[&<>"']/g, (char) => map[char]);
+var S = { eventName:'', price:35, products:[] };
+
+function save(){ store.set('lf4', S); }
+function load(){ var d = store.get('lf4'); if(d){ S = d; } }
+
+function totalStock(p){ return p.cartons*11 + p.units; }
+function remaining(p){ return totalStock(p) - p.sold; }
+function totalSold(){ return S.products.reduce(function(s,p){ return s+p.sold; },0); }
+function totalRem(){ return S.products.reduce(function(s,p){ return s+remaining(p); },0); }
+
+function refreshNav(){
+  var ts = totalSold();
+  document.getElementById('nav-ca').textContent = (ts*S.price) + ' €';
+  document.getElementById('nav-sold').textContent = ts + ' vendu' + (ts>1?'s':'');
+  document.getElementById('nav-stock').textContent = '📦 ' + totalRem() + ' restant' + (totalRem()>1?'s':'');
 }
 
-function getNextId() {
-  const id = state.nextId;
-  state.nextId += 1;
-  return id;
-}
-
-function normalizeState(parsed) {
-  const fallback = { eventName: '', unitPrice: 35, nextId: 1, products: [] };
-  if (!parsed || typeof parsed !== 'object') return fallback;
-
-  const products = Array.isArray(parsed.products)
-    ? parsed.products
-      .filter((p) => p && typeof p.name === 'string')
-      .map((p) => ({
-        id: Number.isInteger(p.id) ? p.id : 0,
-        name: p.name.trim().slice(0, 80),
-        stock: Number.isFinite(p.stock) ? Math.max(0, Math.floor(p.stock)) : 0,
-        sold: Number.isFinite(p.sold) ? Math.max(0, Math.floor(p.sold)) : 0,
-      }))
-    : [];
-
-  products.forEach((p) => {
-    if (p.sold > p.stock) p.sold = p.stock;
-  });
-
-  const maxId = products.reduce((max, p) => Math.max(max, p.id), 0);
-  return {
-    eventName: typeof parsed.eventName === 'string' ? parsed.eventName.slice(0, 120) : '',
-    unitPrice: Number.isFinite(parsed.unitPrice) && parsed.unitPrice > 0 ? Math.floor(parsed.unitPrice) : 35,
-    nextId: Number.isInteger(parsed.nextId) && parsed.nextId > maxId ? parsed.nextId : maxId + 1,
-    products,
-  };
-}
-
-function load() {
-  const saved = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('lafabrik-event');
-  if (saved) {
-    try {
-      state = normalizeState(JSON.parse(saved));
-    } catch (e) {
-      state = normalizeState(null);
+function buildQuick(){
+  var el = document.getElementById('quick-blocks');
+  el.innerHTML = '';
+  var cats = Object.keys(CATALOG);
+  for(var ci=0; ci<cats.length; ci++){
+    var cat = cats[ci];
+    var names = CATALOG[cat];
+    var block = document.createElement('div');
+    block.className = 'card';
+    block.style.padding = '0.9rem';
+    var titleHtml = '<div class="cat-title">' + (ICONS[cat]||'📦') + ' ' + cat + '</div>';
+    var gridHtml = '<div class="q-grid" id="qg_' + ci + '"></div>';
+    block.innerHTML = titleHtml + gridHtml;
+    el.appendChild(block);
+    var grid = block.querySelector('.q-grid');
+    for(var ni=0; ni<names.length; ni++){
+      (function(name, cat){
+        var btn = document.createElement('button');
+        btn.className = 'qbtn';
+        btn.id = 'qb_' + name;
+        var added = S.products.some(function(p){ return p.name===name; });
+        if(added){ btn.classList.add('on'); }
+        btn.textContent = (added?'✓ ':'+ ') + name;
+        btn.addEventListener('click', function(){ toggleQuick(name, cat, btn); });
+        grid.appendChild(btn);
+      })(names[ni], cat);
     }
   }
-  save();
-  render();
 }
 
-function save() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+function toggleQuick(name, cat, btn){
+  var idx = -1;
+  for(var i=0;i<S.products.length;i++){ if(S.products[i].name===name){ idx=i; break; } }
+  if(idx>=0){
+    if(S.products[idx].sold>0){ showToast('⚠️ Déjà des ventes enregistrées'); return; }
+    S.products.splice(idx,1);
+    btn.classList.remove('on');
+    btn.textContent = '+ ' + name;
+    showToast(name + ' retiré');
+  } else {
+    S.products.push({id:Date.now(), name:name, cat:cat, cartons:0, units:0, sold:0});
+    btn.classList.add('on');
+    btn.textContent = '✓ ' + name;
+    showToast(name + ' ajouté ✓');
+  }
+  save(); renderSetup(); refreshNav();
 }
 
-function showTab(tab) {
-  document.querySelectorAll('.tab').forEach((t) => t.classList.remove('active'));
-  document.querySelectorAll('.page').forEach((p) => p.classList.remove('active'));
-  document.getElementById(`tab-${tab}`).classList.add('active');
-  document.getElementById(`page-${tab}`).classList.add('active');
-  if (tab === 'sell') renderSell();
-  if (tab === 'summary') renderSummary();
+function addCustom(){
+  var name = document.getElementById('custom-name').value.trim();
+  var cat = document.getElementById('custom-cat').value;
+  if(!name){ showToast('Entrez un nom'); return; }
+  var exists = S.products.some(function(p){ return p.name.toLowerCase()===name.toLowerCase(); });
+  if(exists){ showToast('Existe déjà'); return; }
+  S.products.push({id:Date.now(), name:name, cat:cat, cartons:0, units:0, sold:0});
+  document.getElementById('custom-name').value = '';
+  save(); buildQuick(); renderSetup(); refreshNav();
+  showToast(name + ' ajouté ✓');
 }
 
-function updateEventName() {
-  state.eventName = document.getElementById('event-name').value.slice(0, 120);
-  document.getElementById('nav-event-name').textContent = state.eventName || '⚡ Prêt à vendre';
-  save();
+function setCartons(id, val){
+  for(var i=0;i<S.products.length;i++){
+    if(S.products[i].id===id){ S.products[i].cartons=Math.max(0,val); break; }
+  }
+  save(); renderSetup(); refreshNav();
 }
 
-function addProduct() {
-  const input = document.getElementById('new-product-name');
-  const name = input.value.trim();
-  if (!name) return;
+function setUnits(id, val){
+  for(var i=0;i<S.products.length;i++){
+    if(S.products[i].id===id){ S.products[i].units=Math.max(0,val); break; }
+  }
+  save(); renderSetup(); refreshNav();
+}
 
-  if (state.products.find((p) => p.name.toLowerCase() === name.toLowerCase())) {
-    showToast('Ce cadre existe déjà !');
+function delProd(id){
+  var p = null;
+  for(var i=0;i<S.products.length;i++){ if(S.products[i].id===id){ p=S.products[i]; break; } }
+  if(p && p.sold>0 && !confirm('Ce cadre a des ventes. Supprimer quand même ?')) return;
+  S.products = S.products.filter(function(x){ return x.id!==id; });
+  save(); buildQuick(); renderSetup(); refreshNav();
+}
+
+function renderSetup(){
+  var list = document.getElementById('stock-list');
+  if(!S.products.length){
+    list.innerHTML = '<div class="empty">📦<br>Ajoutez des modèles ci-dessus</div>';
     return;
   }
-
-  state.products.push({ id: getNextId(), name: name.slice(0, 80), stock: 0, sold: 0 });
-  input.value = '';
-  save();
-  renderSetup();
+  var cats = {};
+  S.products.forEach(function(p){ if(!cats[p.cat]) cats[p.cat]=[]; cats[p.cat].push(p); });
+  var html = '';
+  Object.keys(cats).forEach(function(cat){
+    html += '<div class="cat-title" style="margin-top:0.6rem">' + (ICONS[cat]||'📦') + ' ' + cat + '</div>';
+    cats[cat].forEach(function(p){
+      var tot = totalStock(p);
+      html += '<div class="prod-row">'
+        + '<div class="prod-top">'
+        + '<div class="prod-name">' + p.name + '</div>'
+        + '<button class="del-btn" onclick="delProd(' + p.id + ')">✕</button>'
+        + '</div>'
+        + '<div class="stock-line">'
+        + '<div class="stk-group"><span class="stk-lbl">Cartons ×11</span>'
+        + '<button class="qb" onclick="setCartons(' + p.id + ',' + (p.cartons-1) + ')">−</button>'
+        + '<span class="qnum">' + p.cartons + '</span>'
+        + '<button class="qb" onclick="setCartons(' + p.id + ',' + (p.cartons+1) + ')">+</button></div>'
+        + '<div class="stk-group"><span class="stk-lbl">Unités</span>'
+        + '<button class="qb" onclick="setUnits(' + p.id + ',' + (p.units-1) + ')">−</button>'
+        + '<span class="qnum">' + p.units + '</span>'
+        + '<button class="qb" onclick="setUnits(' + p.id + ',' + (p.units+1) + ')">+</button></div>'
+        + '<span class="tot-lbl">= ' + tot + ' 🏁</span>'
+        + '</div></div>';
+    });
+  });
+  list.innerHTML = html;
 }
 
-function quickAdd(name) {
-  if (state.products.find((p) => p.name.toLowerCase() === name.toLowerCase())) {
-    showToast(`${name} déjà dans la liste`);
-    return;
-  }
-  state.products.push({ id: getNextId(), name, stock: 0, sold: 0 });
-  save();
-  renderSetup();
-  showToast(`${name} ajouté ✓`);
+function startSell(){
+  S.price = parseFloat(document.getElementById('ev-price').value) || 35;
+  S.eventName = document.getElementById('ev-name').value;
+  if(!S.products.length){ showToast('Ajoutez des cadres !'); return; }
+  if(!S.products.some(function(p){ return totalStock(p)>0; })){ showToast('Définissez les quantités !'); return; }
+  save(); goTab('sell'); showToast('Go ! Bonne vente 🏁');
 }
 
-function deleteProduct(id) {
-  state.products = state.products.filter((p) => p.id !== id);
-  save();
-  renderSetup();
+function sell(id){
+  var p = null;
+  for(var i=0;i<S.products.length;i++){ if(S.products[i].id===id){ p=S.products[i]; break; } }
+  if(!p || remaining(p)<=0) return;
+  p.sold++; save(); refreshNav(); renderSell();
+  showToast('+1 ' + p.name + ' — +' + S.price + '€ 💰');
 }
 
-function setStock(id, val) {
-  const p = state.products.find((item) => item.id === id);
-  if (!p) return;
-  p.stock = Math.max(0, val);
-  p.sold = Math.min(p.sold, p.stock);
-  save();
-  renderSetup();
-}
-
-function renderSetup() {
-  const list = document.getElementById('product-list');
-  if (state.products.length === 0) {
-    list.innerHTML = '<div class="empty"><div class="empty-icon">📦</div><div class="empty-text">Ajoutez vos cadres ci-dessus<br>puis définissez les quantités</div></div>';
-    return;
-  }
-
-  list.innerHTML = state.products.map((p) => {
-    const safeName = escapeHtml(p.name);
-    return `
-      <div class="product-setup-item">
-        <div class="product-setup-name" title="${safeName}">${safeName}</div>
-        <div class="qty-control">
-          <button class="qty-btn" onclick="setStock(${p.id}, ${p.stock - 1})" type="button">−</button>
-          <span class="qty-num">${p.stock}</span>
-          <button class="qty-btn" onclick="setStock(${p.id}, ${p.stock + 1})" type="button">+</button>
-        </div>
-        <button class="delete-btn" onclick="deleteProduct(${p.id})" type="button">✕</button>
-      </div>
-    `;
-  }).join('');
-}
-
-function startSelling() {
-  const nextPrice = parseInt(document.getElementById('unit-price').value, 10);
-  state.unitPrice = Number.isFinite(nextPrice) && nextPrice > 0 ? nextPrice : 35;
-
-  const hasStock = state.products.some((p) => p.stock > 0);
-  if (state.products.length === 0) {
-    showToast('Ajoutez des cadres d\'abord !');
-    return;
-  }
-  if (!hasStock) {
-    showToast('Définissez les quantités !');
-    return;
-  }
-  save();
-  showTab('sell');
-  showToast('C\'est parti ! Bonne vente 🏁');
-}
-
-function sell(id) {
-  const p = state.products.find((item) => item.id === id);
-  if (!p || p.stock - p.sold <= 0) return;
-  p.sold += 1;
-  save();
-  renderSell();
-  renderSummaryHeader();
-  showToast(`${p.name} vendu ! +${state.unitPrice}€`);
-}
-
-function undoSell(id) {
-  const p = state.products.find((item) => item.id === id);
-  if (!p || p.sold <= 0) return;
-  p.sold -= 1;
-  save();
-  renderSell();
-  renderSummaryHeader();
+function undoSell(id){
+  var p = null;
+  for(var i=0;i<S.products.length;i++){ if(S.products[i].id===id){ p=S.products[i]; break; } }
+  if(!p || p.sold<=0) return;
+  p.sold--; save(); refreshNav(); renderSell();
   showToast('Vente annulée');
 }
 
-function renderSell() {
-  const list = document.getElementById('sell-list');
-  const empty = document.getElementById('sell-empty');
-  const header = document.getElementById('sell-event-header');
-
-  if (state.products.length === 0) {
-    list.innerHTML = '';
-    empty.style.display = 'block';
-    header.style.display = 'none';
-    return;
-  }
-
-  empty.style.display = 'none';
-  header.style.display = 'block';
-  document.getElementById('sell-event-display').textContent = state.eventName || 'Événement en cours';
-  renderSummaryHeader();
-
-  const totalSold = state.products.reduce((sum, p) => sum + p.sold, 0);
-  const totalCA = totalSold * state.unitPrice;
-  document.getElementById('sell-stats-header').textContent = `${totalSold} vendu${totalSold > 1 ? 's' : ''} — ${totalCA} €`;
-
-  list.innerHTML = state.products.map((p) => {
-    const remaining = p.stock - p.sold;
-    const stockClass = remaining === 0 ? 'out' : remaining <= 2 ? 'low' : '';
-    const stockText = remaining === 0 ? 'ÉPUISÉ' : `${remaining} restant${remaining > 1 ? 's' : ''}`;
-    const btnClass = remaining === 0 ? 'disabled' : '';
-    const safeName = escapeHtml(p.name);
-
-    return `
-      <div class="sell-card">
-        <div class="sell-info">
-          <div class="sell-name" title="${safeName}">${safeName}</div>
-          <div class="sell-stock ${stockClass}">${stockText}${p.sold > 0 ? ` · ${p.sold} vendu${p.sold > 1 ? 's' : ''}` : ''}</div>
-        </div>
-        <div class="sell-controls">
-          ${p.sold > 0 ? `<button class="undo-btn" onclick="undoSell(${p.id})" title="Annuler" type="button">↺</button>` : ''}
-          <button class="big-sell-btn ${btnClass}" onclick="sell(${p.id})" ${remaining === 0 ? 'disabled' : ''} type="button">+</button>
-        </div>
-      </div>
-    `;
-  }).join('');
+function renderSell(){
+  var list = document.getElementById('sell-list');
+  var empty = document.getElementById('sell-empty');
+  var bar = document.getElementById('sell-bar');
+  if(!S.products.length){ list.innerHTML=''; empty.style.display='block'; bar.style.display='none'; return; }
+  empty.style.display='none'; bar.style.display='block';
+  document.getElementById('sell-ev-name').textContent = S.eventName || 'Événement en cours';
+  var ts = totalSold();
+  document.getElementById('sell-ev-stats').textContent = ts + ' vendu' + (ts>1?'s':'') + ' — ' + (ts*S.price) + ' €';
+  var cats = {};
+  S.products.forEach(function(p){ if(!cats[p.cat]) cats[p.cat]=[]; cats[p.cat].push(p); });
+  var html = '';
+  Object.keys(cats).forEach(function(cat){
+    html += '<div style="font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--sub);margin:0.75rem 0 0.35rem">' + (ICONS[cat]||'') + ' ' + cat + '</div>';
+    cats[cat].forEach(function(p){
+      var rem = remaining(p);
+      var sc = rem===0?'out':rem<=3?'low':'';
+      var st = rem===0?'⛔ ÉPUISÉ':(rem + ' restant' + (rem>1?'s':''));
+      html += '<div class="sell-card">'
+        + '<div class="s-info">'
+        + '<div class="s-name">' + p.name + '</div>'
+        + '<div class="s-stock ' + sc + '">' + st + (p.sold>0?' &nbsp;·&nbsp; <strong style="color:#fff">' + p.sold + '</strong> vendu' + (p.sold>1?'s':''):'') + '</div>'
+        + '</div>'
+        + '<div class="s-right">'
+        + (p.sold>0?'<button class="undo" onclick="undoSell(' + p.id + ')">↺</button>':'')
+        + (p.sold>0?'<div class="sold-pill">' + p.sold + '</div>':'')
+        + '<button class="sell-btn" onclick="sell(' + p.id + ')"' + (rem===0?' disabled':'') + '>+</button>'
+        + '</div></div>';
+    });
+  });
+  list.innerHTML = html;
 }
 
-function renderSummary() {
-  renderSummaryHeader();
-  const rows = document.getElementById('summary-rows');
-  const remaining = document.getElementById('remaining-rows');
-
-  const sold = state.products.filter((p) => p.sold > 0).sort((a, b) => b.sold - a.sold);
-  const rest = state.products.filter((p) => p.stock - p.sold > 0);
-
-  if (sold.length === 0) {
-    rows.innerHTML = '<div class="empty" style="padding:2rem 0"><div class="empty-icon">📊</div><div class="empty-text">Aucune vente encore</div></div>';
-  } else {
-    rows.innerHTML = sold.map((p) => {
-      const safeName = escapeHtml(p.name);
-      return `
-      <div class="summary-row">
-        <div class="summary-name" title="${safeName}">${safeName}</div>
-        <div class="summary-sold">${p.sold} vendu${p.sold > 1 ? 's' : ''}</div>
-        <div class="summary-remaining" style="color:#22c55e">+${p.sold * state.unitPrice} €</div>
-      </div>
-    `;
-    }).join('');
-  }
-
-  if (rest.length === 0) {
-    remaining.innerHTML = '<div style="font-size:0.88rem;color:#bbb;padding:0.5rem 0">Tout a été vendu 🎉</div>';
-  } else {
-    remaining.innerHTML = rest.map((p) => {
-      const safeName = escapeHtml(p.name);
-      return `
-      <div class="summary-row">
-        <div class="summary-name" title="${safeName}">${safeName}</div>
-        <div class="summary-remaining">${p.stock - p.sold} restant${p.stock - p.sold > 1 ? 's' : ''}</div>
-      </div>
-    `;
-    }).join('');
-  }
+function renderSummary(){
+  var ts = totalSold(), ca = ts*S.price;
+  document.getElementById('sum-ca').textContent = ca + ' €';
+  document.getElementById('sum-units').textContent = ts + ' cadre' + (ts>1?'s':'') + ' vendu' + (ts>1?'s':'');
+  var sold = S.products.filter(function(p){ return p.sold>0; }).sort(function(a,b){ return b.sold-a.sold; });
+  document.getElementById('sum-sold').innerHTML = sold.length ? sold.map(function(p){
+    return '<div class="sum-row"><div class="sum-name">' + p.name + '</div><div class="sum-s">' + p.sold + '×</div><div class="sum-c">+' + (p.sold*S.price) + ' €</div></div>';
+  }).join('') : '<div style="font-size:0.85rem;color:var(--sub);padding:0.5rem 0">Aucune vente encore</div>';
+  var rest = S.products.filter(function(p){ return remaining(p)>0; });
+  document.getElementById('sum-rest').innerHTML = rest.length ? rest.map(function(p){
+    return '<div class="sum-row"><div class="sum-name">' + p.name + '</div><div class="sum-r">' + remaining(p) + ' restant' + (remaining(p)>1?'s':'') + '</div></div>';
+  }).join('') : '<div style="font-size:0.85rem;color:var(--green);padding:0.5rem 0">🎉 Tout vendu !</div>';
 }
 
-function renderSummaryHeader() {
-  const totalSold = state.products.reduce((sum, p) => sum + p.sold, 0);
-  const totalCA = totalSold * state.unitPrice;
-  document.getElementById('total-ca').textContent = `${totalCA} €`;
-  document.getElementById('total-units').textContent = `${totalSold} cadre${totalSold > 1 ? 's' : ''} vendu${totalSold > 1 ? 's' : ''}`;
+function goTab(t){
+  ['setup','sell','summary'].forEach(function(x){
+    document.getElementById('tab-'+x).classList.toggle('active', x===t);
+    document.getElementById('page-'+x).classList.toggle('active', x===t);
+  });
+  if(t==='sell') renderSell();
+  if(t==='summary') renderSummary();
 }
 
-function resetAll() {
-  if (!confirm('Tout effacer et recommencer à zéro ?')) return;
-  state = { eventName: '', unitPrice: 35, nextId: 1, products: [] };
-  localStorage.removeItem('lafabrik-event');
-  localStorage.removeItem(STORAGE_KEY);
-  document.getElementById('event-name').value = '';
-  document.getElementById('unit-price').value = 35;
-  document.getElementById('nav-event-name').textContent = '⚡ Prêt à vendre';
-  renderSetup();
-  renderSell();
-  renderSummary();
+function resetAll(){
+  if(!confirm('Tout effacer ?')) return;
+  S = {eventName:'', price:35, products:[]};
+  store.del('lf4');
+  document.getElementById('ev-name').value='';
+  document.getElementById('ev-price').value=35;
+  buildQuick(); renderSetup(); refreshNav();
   showToast('Remis à zéro ✓');
 }
 
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2200);
+var toastTimer;
+function showToast(msg){
+  clearTimeout(toastTimer);
+  var t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 2000);
 }
 
-function render() {
-  document.getElementById('event-name').value = state.eventName || '';
-  document.getElementById('unit-price').value = state.unitPrice || 35;
-  document.getElementById('nav-event-name').textContent = state.eventName || '⚡ Prêt à vendre';
-  renderSetup();
-  renderSummaryHeader();
-}
+// EVENTS
+document.getElementById('ev-name').addEventListener('input', function(){ S.eventName=this.value; save(); refreshNav(); });
+document.getElementById('ev-price').addEventListener('input', function(){ S.price=parseFloat(this.value)||35; save(); });
+document.getElementById('btn-custom-add').addEventListener('click', addCustom);
+document.getElementById('custom-name').addEventListener('keydown', function(e){ if(e.key==='Enter') addCustom(); });
+document.getElementById('btn-start').addEventListener('click', startSell);
+document.getElementById('btn-reset').addEventListener('click', resetAll);
 
+// INIT
 load();
+if(S.eventName) document.getElementById('ev-name').value = S.eventName;
+if(S.price) document.getElementById('ev-price').value = S.price;
+buildQuick();
+renderSetup();
+refreshNav();
 </script>
 </body>
 </html>

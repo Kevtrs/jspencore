@@ -2,6 +2,9 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-title" content="LaFabrik"/>
+<meta name="theme-color" content="#e8001d"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 <title>LaFabrik — Circuit</title>
 <style>
@@ -174,6 +177,7 @@ select.inp{-webkit-appearance:none}
 .toast.show{transform:translateX(-50%) translateY(0)}
 .empty{text-align:center;color:#94a3b8;padding:28px 12px;font-size:14px}
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
 
@@ -228,6 +232,10 @@ select.inp{-webkit-appearance:none}
   <div id="stock-list"></div>
   <div style="margin-top:8px">
     <button class="btn btn-red" id="btn-start" type="button">🏁 DÉMARRER LES VENTES</button>
+    <div style="display:flex;gap:10px;margin-top:10px">
+      <button class="btn btn-ghost" style="flex:1" type="button" onclick="showExportQr()">📤 Exporter</button>
+      <button class="btn btn-ghost" style="flex:1" type="button" onclick="showImportQr()">📥 Importer</button>
+    </div>
     <button class="btn btn-ghost" id="btn-reset" type="button" style="margin-top:10px">↺ Tout remettre à zéro</button>
   </div>
 </div>
@@ -773,6 +781,140 @@ document.getElementById('btn-reset').addEventListener('click',resetAll);
 document.getElementById('sell-search').addEventListener('input',e=>{S.query=e.target.value;save();renderSell()});
 document.getElementById('btn-clear-search').addEventListener('click',()=>{S.query='';document.getElementById('sell-search').value='';save();renderSell()});
 
+// ===== QR EXPORT / IMPORT =====
+function showExportQr() {
+  var modal = document.getElementById('qr-modal');
+  var title = document.getElementById('qr-title');
+  var text = document.getElementById('qr-text');
+  var canvas = document.getElementById('qr-canvas');
+  var textarea = document.getElementById('qr-textarea');
+  var action = document.getElementById('qr-action');
+  if (!modal) return;
+
+  var data = JSON.stringify(S);
+  var compressed = btoa(unescape(encodeURIComponent(data)));
+
+  title.textContent = 'Exporter mes donnees';
+  text.textContent = 'Scannez le QR depuis l autre appareil, ou copiez le code texte.';
+  canvas.innerHTML = '';
+  textarea.style.display = 'block';
+  textarea.value = compressed;
+  textarea.readOnly = true;
+  action.textContent = 'Copier le code';
+  action.onclick = function() {
+    navigator.clipboard.writeText(compressed).then(function() {
+      showToast('Code copie ! Collez-le sur l autre appareil');
+    });
+  };
+
+  if (compressed.length <= 1800 && typeof QRCode !== 'undefined') {
+    try {
+      new QRCode(canvas, {
+        text: 'LF:' + compressed,
+        width: 200, height: 200,
+        colorDark: '#0f172a', colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.M
+      });
+    } catch(e) { canvas.innerHTML = ''; }
+  }
+
+  modal.style.display = 'flex';
+}
+
+function showImportQr() {
+  var modal = document.getElementById('qr-modal');
+  var title = document.getElementById('qr-title');
+  var text = document.getElementById('qr-text');
+  var canvas = document.getElementById('qr-canvas');
+  var textarea = document.getElementById('qr-textarea');
+  var action = document.getElementById('qr-action');
+  if (!modal) return;
+
+  title.textContent = 'Importer des donnees';
+  text.textContent = 'Collez ici le code copie depuis l autre appareil.';
+  canvas.innerHTML = '';
+  textarea.style.display = 'block';
+  textarea.value = '';
+  textarea.readOnly = false;
+  textarea.placeholder = 'Collez le code ici...';
+  action.textContent = 'Importer';
+  action.onclick = doImport;
+
+  modal.style.display = 'flex';
+}
+
+function closeQrModal() {
+  var modal = document.getElementById('qr-modal');
+  if (modal) modal.style.display = 'none';
+}
+
+function doImport() {
+  var textarea = document.getElementById('qr-textarea');
+  if (!textarea) return;
+  var raw = textarea.value.trim();
+  if (!raw) { showToast('Collez un code dabord'); return; }
+  try {
+    var clean = raw.startsWith('LF:') ? raw.slice(3) : raw;
+    var parsed;
+    if (clean.startsWith('{')) {
+      parsed = JSON.parse(clean);
+    } else {
+      parsed = JSON.parse(decodeURIComponent(escape(atob(clean))));
+    }
+    if (!parsed.products || !parsed.salesLog) throw new Error('Format invalide');
+    if (!confirm('Remplacer les donnees actuelles par celles importees ?')) return;
+    S = Object.assign({}, INIT, parsed);
+    save();
+    closeQrModal();
+    buildQuick(); renderSetup(); renderSell(); renderSummary(); refreshNav();
+    showToast('Donnees importees');
+    haptic('medium');
+  } catch(e) {
+    showToast('Code invalide');
+    haptic('error');
+  }
+}
+
+// ===== OFFLINE DETECTION =====
+function setupOffline() {
+  var banner = document.getElementById('offline-banner');
+  if (!banner) return;
+  function update() {
+    banner.style.display = navigator.onLine ? 'none' : 'block';
+  }
+  window.addEventListener('online', update);
+  window.addEventListener('offline', update);
+  update();
+}
+
+// ===== INSTALL PROMPT =====
+var deferredInstall = null;
+window.addEventListener('beforeinstallprompt', function(e) {
+  e.preventDefault();
+  deferredInstall = e;
+  var b = document.getElementById('install-banner');
+  if (b) {
+    b.style.display = 'flex';
+    setTimeout(function() { if (b) b.style.display = 'none'; }, 9000);
+  }
+});
+
+function installApp() {
+  if (!deferredInstall) {
+    showToast('iPhone: Safari > Partager > Sur ecran accueil');
+    return;
+  }
+  deferredInstall.prompt();
+  deferredInstall.userChoice.then(function(r) {
+    if (r.outcome === 'accepted') showToast('App installee !');
+    deferredInstall = null;
+    var b = document.getElementById('install-banner');
+    if (b) b.style.display = 'none';
+  });
+}
+
+setupOffline();
+
 // INIT
 load();
 document.getElementById('ev-name').value=S.eventName||'';
@@ -781,5 +923,35 @@ document.getElementById('sell-search').value=S.query||'';
 setStockMode(S.stockMode||'ALL');
 buildQuick();renderSetup();renderSell();renderSummary();refreshNav();
 </script>
+
+<!-- OFFLINE BANNER -->
+<div id="offline-banner" style="display:none;position:fixed;top:0;left:0;right:0;z-index:300;background:#f97316;color:#fff;text-align:center;padding:9px 16px;font-size:13px;font-weight:800;letter-spacing:.03em">
+  📵 Mode hors-ligne — vos données sont sauvegardées
+</div>
+
+<!-- INSTALL BANNER -->
+<div id="install-banner" style="display:none;position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#0f172a;color:#fff;border-radius:16px;padding:14px 18px;z-index:200;align-items:center;gap:12px;box-shadow:0 8px 30px rgba(0,0,0,.4);width:min(360px,92%)">
+  <div style="flex:1;min-width:0">
+    <div style="font-weight:900;font-size:14px">Installer l&#39;app</div>
+    <div style="font-size:12px;color:#64748b;margin-top:2px">Acc&#232;s hors-ligne garanti</div>
+  </div>
+  <button onclick="installApp()" style="background:var(--red);color:#fff;border:0;border-radius:10px;padding:8px 14px;font-weight:800;font-size:13px;cursor:pointer;white-space:nowrap;flex-shrink:0">Installer</button>
+  <button onclick="this.parentNode.style.display='none'" style="background:none;border:0;color:#64748b;font-size:20px;cursor:pointer;padding:4px;flex-shrink:0">&#xd7;</button>
+</div>
+
+<!-- QR MODAL -->
+<div id="qr-modal" style="display:none;position:fixed;inset:0;background:rgba(15,23,42,.55);align-items:center;justify-content:center;padding:20px;z-index:9999">
+  <div style="width:min(440px,100%);background:#fff;border-radius:20px;padding:20px;box-shadow:0 20px 50px rgba(2,8,23,.3)">
+    <div id="qr-title" style="font-size:20px;font-weight:900;margin-bottom:8px">Transf&#233;rer</div>
+    <div id="qr-text" style="color:#475569;font-size:14px;line-height:1.5;margin-bottom:12px"></div>
+    <div id="qr-canvas" style="display:flex;justify-content:center;margin:12px 0"></div>
+    <textarea id="qr-textarea" style="width:100%;height:80px;border:1.5px solid #e2e8f0;border-radius:10px;padding:10px;font-size:12px;font-family:monospace;resize:none;display:none" placeholder="Colle le code ici..."></textarea>
+    <div style="display:flex;gap:10px;margin-top:14px">
+      <button onclick="closeQrModal()" style="flex:1;border:1.5px solid #e2e8f0;background:#fff;border-radius:12px;padding:12px;font-weight:800;font-size:14px;cursor:pointer">Fermer</button>
+      <button id="qr-action" style="flex:1;background:var(--red);color:#fff;border:0;border-radius:12px;padding:12px;font-weight:800;font-size:14px;cursor:pointer">OK</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>

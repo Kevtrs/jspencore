@@ -349,9 +349,9 @@ select.inp{-webkit-appearance:none}
 
 <script>
 // ===== STORE =====
-const KEY = 'lf_v8';
-const KEY_HIST = 'lf_v8_hist';
-const KEY_CAT = 'lf_v8_cat'; // Catalogue permanent
+const KEY = 'lf_v9';
+const KEY_HIST = 'lf_v9_hist';
+const KEY_CAT = 'lf_v9_cat'; // Catalogue permanent
 const mem = {};
 const store = {
   get(k){ try{ const r=localStorage.getItem(k); return r?JSON.parse(r):null; }catch(_){ return mem[k]||null; } },

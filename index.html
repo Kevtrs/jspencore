@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="fr">
 <head>
 <meta charset="UTF-8"/>
@@ -78,38 +77,38 @@ select.inp{-webkit-appearance:none}
 .plus-btn:disabled{background:#cbd5e1;color:#94a3b8;box-shadow:none}
 
 /* DAY CLOSED BANNER */
-.day-closed-wrap{background:#0f172a;border-radius:var(–r);padding:2rem;text-align:center;margin-bottom:16px;display:none}
+.day-closed-wrap{background:#0f172a;border-radius:var(--r);padding:2rem;text-align:center;margin-bottom:16px;display:none}
 .day-closed-wrap.show{display:block}
-.day-open-btn{background:var(–red);color:#fff;border:0;border-radius:12px;padding:14px 28px;font-size:1rem;font-weight:800;cursor:pointer;font-family:inherit;margin-top:1rem}
+.day-open-btn{background:var(--red);color:#fff;border:0;border-radius:12px;padding:14px 28px;font-size:1rem;font-weight:800;cursor:pointer;font-family:inherit;margin-top:1rem}
 
 .metrics-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px}
-.metric-card{background:var(–surface);border:1px solid var(–line);border-radius:var(–r);box-shadow:var(–shadow);padding:14px;text-align:center}
+.metric-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:14px;text-align:center}
 .metric-v{font-size:2rem;font-weight:900;line-height:1;margin-bottom:4px}
-.metric-l{font-size:10px;font-weight:700;color:var(–muted);letter-spacing:.1em;text-transform:uppercase}
-.sum-row{border:1px solid var(–line);border-radius:12px;background:#fff;padding:10px 12px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.metric-l{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+.sum-row{border:1px solid var(--line);border-radius:12px;background:#fff;padding:10px 12px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:8px}
 .rn{font-size:14px;font-weight:800;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.rs{font-size:14px;font-weight:900;color:var(–red)}.rc{font-size:13px;font-weight:800;color:var(–green)}.rr{font-size:13px;color:#64748b}
-.log-row{border:1px solid var(–line);border-radius:12px;background:#fff;padding:11px 12px;margin-bottom:8px;display:flex;gap:10px;align-items:center}
+.rs{font-size:14px;font-weight:900;color:var(--red)}.rc{font-size:13px;font-weight:800;color:var(--green)}.rr{font-size:13px;color:#64748b}
+.log-row{border:1px solid var(--line);border-radius:12px;background:#fff;padding:11px 12px;margin-bottom:8px;display:flex;gap:10px;align-items:center}
 .log-t{font-weight:800;font-size:14px}.log-s{font-size:12px;color:#64748b;margin-top:2px}
 .log-badge{font-size:11px;font-weight:800;padding:4px 9px;border-radius:999px;background:#fee2e2;color:#b91c1c;flex-shrink:0}
 .log-badge.ok{background:#dcfce7;color:#15803d}
 
 /* HISTORIQUE */
-.hist-card{border:1.5px solid var(–line);border-radius:16px;background:#fff;padding:16px;margin-bottom:12px;cursor:pointer;transition:all .15s}
-.hist-card:hover{border-color:var(–red);box-shadow:0 4px 20px rgba(232,0,29,.1)}
+.hist-card{border:1.5px solid var(--line);border-radius:16px;background:#fff;padding:16px;margin-bottom:12px;cursor:pointer;transition:all .15s}
+.hist-card:hover{border-color:var(--red);box-shadow:0 4px 20px rgba(232,0,29,.1)}
 .hist-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
-.hist-name{font-size:1rem;font-weight:900;color:var(–text)}
-.hist-date{font-size:11px;color:var(–muted);font-weight:600;margin-top:2px}
+.hist-name{font-size:1rem;font-weight:900;color:var(--text)}
+.hist-date{font-size:11px;color:var(--muted);font-weight:600;margin-top:2px}
 .hist-badge{font-size:11px;font-weight:800;padding:3px 10px;border-radius:100px;background:#fee2e2;color:#b91c1c}
 .hist-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .hstat{background:#f8fafc;border-radius:10px;padding:8px;text-align:center}
-.hstat-v{font-size:1.1rem;font-weight:900;color:var(–text)}
-.hstat-l{font-size:10px;color:var(–muted);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-top:1px}
-.hist-top{margin-top:10px;padding-top:10px;border-top:1px solid var(–line);font-size:12px;color:var(–muted)}
+.hstat-v{font-size:1.1rem;font-weight:900;color:var(--text)}
+.hstat-l{font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-top:1px}
+.hist-top{margin-top:10px;padding-top:10px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
 .hist-top span{display:inline-block;background:#f1f5f9;border-radius:6px;padding:2px 8px;margin:2px;color:#475569;font-weight:600}
-.back-btn{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(–muted);cursor:pointer;margin-bottom:16px;border:0;background:none;padding:0}
-.back-btn:hover{color:var(–text)}
-.detail-hero{background:linear-gradient(135deg,#1a0005,#0f172a);border-radius:var(–r);padding:20px;margin-bottom:14px;color:#fff;text-align:center}
+.back-btn{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;margin-bottom:16px;border:0;background:none;padding:0}
+.back-btn:hover{color:var(--text)}
+.detail-hero{background:linear-gradient(135deg,#1a0005,#0f172a);border-radius:var(--r);padding:20px;margin-bottom:14px;color:#fff;text-align:center}
 .detail-name{font-size:1.5rem;font-weight:900;margin-bottom:4px}
 .detail-date{font-size:12px;color:#64748b;margin-bottom:16px}
 .detail-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
@@ -125,9 +124,8 @@ select.inp{-webkit-appearance:none}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(140px);background:#0f172a;color:#fff;padding:12px 20px;border-radius:999px;font-size:14px;font-weight:800;transition:transform .28s cubic-bezier(.4,0,.2,1);z-index:999;white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,.4);pointer-events:none}
 .toast.show{transform:translateX(-50%) translateY(0)}
 .empty{text-align:center;color:#94a3b8;padding:28px 12px;font-size:14px}
-.offline-bar{display:none;position:fixed;top:0;left:0;right:0;z-index:300;background:var(–orange);color:#fff;text-align:center;padding:8px;font-size:13px;font-weight:800}
+.offline-bar{display:none;position:fixed;top:0;left:0;right:0;z-index:300;background:var(--orange);color:#fff;text-align:center;padding:8px;font-size:13px;font-weight:800}
 </style>
-
 </head>
 <body>
 
@@ -137,7 +135,7 @@ select.inp{-webkit-appearance:none}
   <div>
     <div class="brand">La<em>Fabrik</em></div>
     <div class="ev-label" id="nav-event">Aucun événement actif</div>
-    <div style="font-size:10px;color:#cbd5e1;font-weight:600;margin-top:1px">v8.0</div>
+    <div style="font-size:10px;color:#cbd5e1;font-weight:600;margin-top:1px">v9.0</div>
   </div>
   <div class="kpis">
     <div class="kpi"><div class="kpi-v red" id="nav-ca">0 €</div><div class="kpi-l">CA</div></div>
@@ -155,7 +153,6 @@ select.inp{-webkit-appearance:none}
 </div>
 
 <!-- SETUP -->
-
 <div class="page active" id="page-setup">
   <div class="card">
     <div class="sec">Nom de l'événement</div>
@@ -167,6 +164,18 @@ select.inp{-webkit-appearance:none}
       <input class="inp" id="ev-price" type="number" min="1" value="35" style="max-width:160px"/>
       <span style="font-size:1.1rem;color:var(--muted);font-weight:700">€ / cadre</span>
     </div>
+  </div>
+  <div class="card" style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px">
+    <div>
+      <div style="font-size:14px;font-weight:800">Mode sans stock</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:2px">Vendre sans définir les quantités</div>
+    </div>
+    <label style="position:relative;display:inline-block;width:48px;height:28px;flex-shrink:0">
+      <input type="checkbox" id="toggle-no-stock" style="opacity:0;width:0;height:0" onchange="toggleNoStock(this.checked)">
+      <span id="toggle-slider" style="position:absolute;cursor:pointer;inset:0;background:#e2e8f0;border-radius:100px;transition:.3s">
+        <span style="position:absolute;left:4px;top:4px;width:20px;height:20px;background:#fff;border-radius:50%;transition:.3s;box-shadow:0 1px 4px rgba(0,0,0,.2)" id="toggle-thumb"></span>
+      </span>
+    </label>
   </div>
   <div id="quick-blocks"></div>
   <div class="card">
@@ -195,11 +204,9 @@ select.inp{-webkit-appearance:none}
 </div>
 
 <!-- SELL -->
-
 <div class="page" id="page-sell">
 
   <!-- JOURNÉE CLÔTURÉE -->
-
   <div class="day-closed-wrap" id="day-closed-wrap">
     <div style="font-size:2rem;margin-bottom:8px">🔒</div>
     <div style="font-size:1.1rem;font-weight:900;color:#fff;margin-bottom:6px">Journée clôturée</div>
@@ -237,7 +244,6 @@ select.inp{-webkit-appearance:none}
 </div>
 
 <!-- SUMMARY -->
-
 <div class="page" id="page-summary">
   <div class="metrics-row">
     <div class="metric-card"><div class="metric-v" style="color:var(--red)" id="sum-ca">0 €</div><div class="metric-l">CA total</div></div>
@@ -264,7 +270,6 @@ select.inp{-webkit-appearance:none}
 </div>
 
 <!-- STATS -->
-
 <div class="page" id="page-stats">
   <div style="background:linear-gradient(135deg,#1a0005,#0f172a);border-radius:var(--r);padding:16px;margin-bottom:14px;color:#fff">
     <div style="font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#64748b;margin-bottom:8px">Cadence de vente — Jour en cours</div>
@@ -279,11 +284,10 @@ select.inp{-webkit-appearance:none}
   </div>
   <div class="card"><div class="sec">🏆 Top vendeurs</div><div id="top-sellers"></div></div>
   <div class="card"><div class="sec">📊 Par catégorie</div><div id="cat-breakdown"></div></div>
-  <div class="card"><div class="sec">🔮 Projection</div><div id="projection"></div></div>
+
 </div>
 
 <!-- HISTORIQUE -->
-
 <div class="page" id="page-history">
   <div id="hist-list-view">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
@@ -317,7 +321,6 @@ select.inp{-webkit-appearance:none}
 </div>
 
 <!-- QR MODAL -->
-
 <div class="modal-backdrop" id="qr-modal">
   <div class="modal">
     <div class="modal-title" id="qr-title">Transférer</div>
@@ -331,7 +334,6 @@ select.inp{-webkit-appearance:none}
 </div>
 
 <!-- CLOSE EVENT MODAL -->
-
 <div class="modal-backdrop" id="close-modal">
   <div class="modal">
     <div class="modal-title" id="close-modal-title">Clôturer l'événement</div>
@@ -349,6 +351,7 @@ select.inp{-webkit-appearance:none}
 // ===== STORE =====
 const KEY = 'lf_v8';
 const KEY_HIST = 'lf_v8_hist';
+const KEY_CAT = 'lf_v8_cat'; // Catalogue permanent
 const mem = {};
 const store = {
   get(k){ try{ const r=localStorage.getItem(k); return r?JSON.parse(r):null; }catch(_){ return mem[k]||null; } },
@@ -366,7 +369,7 @@ const CATALOG = {
 const ICONS = {'F1 — Casques':'🏎️','MotoGP — Casques':'🏍️','Calendriers & Circuits':'📅','Auto':'🚗'};
 
 // ===== STATE =====
-const INIT = {eventName:'',price:35,currentDay:1,eventClosed:false,dayClosed:false,products:[],salesLog:[],dayClosures:[],nextPid:1,nextLid:1,filter:'ALL',query:'',stockMode:'ALL',note:'',startedAt:null};
+const INIT = {eventName:'',price:35,currentDay:1,eventClosed:false,dayClosed:false,noStock:false,products:[],salesLog:[],dayClosures:[],nextPid:1,nextLid:1,filter:'ALL',query:'',stockMode:'ALL',note:'',startedAt:null};
 
 // Archive Dijon pré-chargée
 const DIJON_ARCHIVE = {
@@ -444,6 +447,143 @@ const DIJON_ARCHIVE = {
   ]
 };
 
+
+// Archive GP France Historique 2026
+const GPFH_ARCHIVE = {
+  id:'gpfh_2026', name:'Grand Prix de France Historique 2026',
+  date:'2026-05-08', dateEnd:'2026-05-10',
+  price:35, totalSold:94, totalCA:3290, days:3, note:'',
+  remainingStock:[
+    {name:'Senna Casque',cat:'F1 — Casques',units:27,cartons:0},
+    {name:'Senna Rouge',cat:'F1 — Casques',units:3,cartons:0},
+    {name:'Schumacher Casque',cat:'F1 — Casques',units:34,cartons:0},
+    {name:'Shumy rouge',cat:'F1 — Casques',units:4,cartons:0},
+    {name:'Hamilton Casque',cat:'F1 — Casques',units:34,cartons:0},
+    {name:'Leclerc Casque',cat:'F1 — Casques',units:27,cartons:0},
+    {name:'Verstappen Casque',cat:'F1 — Casques',units:29,cartons:0},
+    {name:'Norris Casque',cat:'F1 — Casques',units:15,cartons:0},
+    {name:'Piastri Casque',cat:'F1 — Casques',units:3,cartons:0},
+    {name:'Russell Casque',cat:'F1 — Casques',units:2,cartons:0},
+    {name:'Antonelli Casque',cat:'F1 — Casques',units:20,cartons:0},
+    {name:'Hadjar Casque',cat:'F1 — Casques',units:15,cartons:0},
+    {name:'Gasly Casque',cat:'F1 — Casques',units:24,cartons:0},
+    {name:'Ocon Casque',cat:'F1 — Casques',units:15,cartons:0},
+    {name:'Alonso Casque',cat:'F1 — Casques',units:8,cartons:0},
+    {name:'Prost',cat:'F1 — Casques',units:9,cartons:0},
+    {name:'Calendrier F1 2026',cat:'Calendriers & Circuits',units:38,cartons:0},
+    {name:'Calendrier MotoGP 2026',cat:'Calendriers & Circuits',units:3,cartons:0},
+    {name:'Circuit France',cat:'Calendriers & Circuits',units:20,cartons:0},
+    {name:'Porsche',cat:'Auto',units:8,cartons:0},
+    {name:'Alpine',cat:'Auto',units:4,cartons:0}
+  ],
+  topSellers:[
+    {name:'Leclerc Casque',sold:19},{name:'Senna Casque',sold:15},
+    {name:'Verstappen Casque',sold:11},{name:'Hamilton Casque',sold:9},
+    {name:'Schumacher Casque',sold:8},{name:'Calendrier F1 2026',sold:6},
+    {name:'Norris Casque',sold:6},{name:'Hadjar Casque',sold:6},
+    {name:'Gasly Casque',sold:3},{name:'Russell Casque',sold:2},
+    {name:'Alonso Casque',sold:2},{name:'Prost',sold:2},
+    {name:'Senna Rouge',sold:1},{name:'Piastri Casque',sold:1},
+    {name:'Antonelli Casque',sold:1},{name:'Ocon Casque',sold:1},{name:'Porsche',sold:1}
+  ],
+  catBreakdown:{'F1 — Casques':87,'Calendriers & Circuits':6,'Auto':1},
+  salesLog:[
+    {name:'Calendrier F1 2026',cat:'Calendriers & Circuits',ts:1778434320000,active:true,day:3},
+    {name:'Gasly Casque',cat:'F1 — Casques',ts:1778434320000,active:true,day:3},
+    {name:'Antonelli Casque',cat:'F1 — Casques',ts:1778433660000,active:true,day:3},
+    {name:'Norris Casque',cat:'F1 — Casques',ts:1778433240000,active:true,day:3},
+    {name:'Leclerc Casque',cat:'F1 — Casques',ts:1778432400000,active:true,day:3},
+    {name:'Hadjar Casque',cat:'F1 — Casques',ts:1778431440000,active:true,day:3},
+    {name:'Gasly Casque',cat:'F1 — Casques',ts:1778431020000,active:true,day:3},
+    {name:'Verstappen Casque',cat:'F1 — Casques',ts:1778428560000,active:true,day:3},
+    {name:'Piastri Casque',cat:'F1 — Casques',ts:1778428440000,active:true,day:3},
+    {name:'Hamilton Casque',cat:'F1 — Casques',ts:1778426280000,active:true,day:3},
+    {name:'Senna Casque',cat:'F1 — Casques',ts:1778426280000,active:true,day:3},
+    {name:'Leclerc Casque',cat:'F1 — Casques',ts:1778426280000,active:true,day:3},
+    {name:'Senna Casque',cat:'F1 — Casques',ts:1778424000000,active:true,day:3},
+    {name:'Leclerc Casque',cat:'F1 — Casques',ts:1778419920000,active:true,day:3},
+    {name:'Hamilton Casque',cat:'F1 — Casques',ts:1778417880000,active:true,day:3},
+    {name:'Alonso Casque',cat:'F1 — Casques',ts:1778417640000,active:true,day:3},
+    {name:'Hadjar Casque',cat:'F1 — Casques',ts:1778417640000,active:true,day:3},
+    {name:'Verstappen Casque',cat:'F1 — Casques',ts:1778417640000,active:true,day:3},
+    {name:'Leclerc Casque',cat:'F1 — Casques',ts:1778415540000,active:true,day:3},
+    {name:'Senna Casque',cat:'F1 — Casques',ts:1778410380000,active:true,day:3},
+    {name:'Verstappen Casque',cat:'F1 — Casques',ts:1778407800000,active:true,day:3},
+    {name:'Verstappen Casque',cat:'F1 — Casques',ts:1778407020000,active:true,day:3},
+    {name:'Verstappen Casque',cat:'F1 — Casques',ts:1778406240000,active:true,day:3},
+    {name:'Schumacher Casque',cat:'F1 — Casques',ts:1778406240000,active:true,day:3},
+    {name:'Calendrier F1 2026',cat:'Calendriers & Circuits',ts:1778406060000,active:true,day:3},
+    {name:'Calendrier F1 2026',cat:'Calendriers & Circuits',ts:1778406000000,active:true,day:3},
+    {name:'Gasly Casque',cat:'F1 — Casques',ts:1778359800000,active:true,day:2},
+    {name:'Prost',cat:'F1 — Casques',ts:1778358840000,active:true,day:2},
+    {name:'Leclerc Casque',cat:'F1 — Casques',ts:1778357640000,active:true,day:2},
+    {name:'Ocon Casque',cat:'F1 — Casques',ts:1778356320000,active:true,day:2},
+    {name:'Norris Casque',cat:'F1 — Casques',ts:1778355420000,active:true,day:2},
+    {name:'Hamilton Casque',cat:'F1 — Casques',ts:1778354520000,active:true,day:2},
+    {name:'Leclerc Casque',cat:'F1 — Casques',ts:1778352300000,active:true,day:2},
+    {name:'Senna Casque',cat:'F1 — Casques',ts:1778352300000,active:true,day:2},
+    {name:'Schumacher Casque',cat:'F1 — Casques',ts:1778351820000,active:true,day:2},
+    {name:'Leclerc Casque',cat:'F1 — Casques',ts:1778349300000,active:true,day:2},
+    {name:'Leclerc Casque',cat:'F1 — Casques',ts:1778347980000,active:true,day:2},
+    {name:'Hamilton Casque',cat:'F1 — Casques',ts:1778347980000,active:true,day:2},
+    {name:'Senna Casque',cat:'F1 — Casques',ts:1778346300000,active:true,day:2},
+    {name:'Hadjar Casque',cat:'F1 — Casques',ts:1778345760000,active:true,day:2},
+    {name:'Senna Casque',cat:'F1 — Casques',ts:1778345040000,active:true,day:2},
+    {name:'Leclerc Casque',cat:'F1 — Casques',ts:1778343960000,active:true,day:2},
+    {name:'Hamilton Casque',cat:'F1 — Casques',ts:1778341560000,active:true,day:2},
+    {name:'Calendrier F1 2026',cat:'Calendriers & Circuits',ts:1778341320000,active:true,day:2},
+    {name:'Leclerc Casque',cat:'F1 — Casques',ts:1778341320000,active:true,day:2},
+    {name:'Hadjar Casque',cat:'F1 — Casques',ts:1778341320000,active:true,day:2},
+    {name:'Verstappen Casque',cat:'F1 — Casques',ts:1778340540000,active:true,day:2},
+    {name:'Leclerc Casque',cat:'F1 — Casques',ts:1778340540000,active:true,day:2},
+    {name:'Schumacher Casque',cat:'F1 — Casques',ts:1778339880000,active:true,day:2},
+    {name:'Leclerc Casque',cat:'F1 — Casques',ts:1778338980000,active:true,day:2},
+    {name:'Alonso Casque',cat:'F1 — Casques',ts:1778338560000,active:true,day:2},
+    {name:'Calendrier F1 2026',cat:'Calendriers & Circuits',ts:1778338320000,active:true,day:2},
+    {name:'Leclerc Casque',cat:'F1 — Casques',ts:1778338320000,active:true,day:2},
+    {name:'Senna Casque',cat:'F1 — Casques',ts:1778332980000,active:true,day:2},
+    {name:'Schumacher Casque',cat:'F1 — Casques',ts:1778332980000,active:true,day:2},
+    {name:'Norris Casque',cat:'F1 — Casques',ts:1778330640000,active:true,day:2},
+    {name:'Leclerc Casque',cat:'F1 — Casques',ts:1778330640000,active:true,day:2},
+    {name:'Norris Casque',cat:'F1 — Casques',ts:1778330640000,active:true,day:2},
+    {name:'Senna Rouge',cat:'F1 — Casques',ts:1778330580000,active:true,day:2},
+    {name:'Porsche',cat:'Auto',ts:1778329560000,active:true,day:2},
+    {name:'Hamilton Casque',cat:'F1 — Casques',ts:1778329500000,active:true,day:2},
+    {name:'Hamilton Casque',cat:'F1 — Casques',ts:1778328720000,active:true,day:2},
+    {name:'Verstappen Casque',cat:'F1 — Casques',ts:1778328720000,active:true,day:2},
+    {name:'Senna Casque',cat:'F1 — Casques',ts:1778328720000,active:true,day:2},
+    {name:'Norris Casque',cat:'F1 — Casques',ts:1778325300000,active:true,day:2},
+    {name:'Hadjar Casque',cat:'F1 — Casques',ts:1778324640000,active:true,day:2},
+    {name:'Senna Casque',cat:'F1 — Casques',ts:1778323380000,active:true,day:2},
+    {name:'Senna Casque',cat:'F1 — Casques',ts:1778323380000,active:true,day:2},
+    {name:'Leclerc Casque',cat:'F1 — Casques',ts:1778321160000,active:true,day:2},
+    {name:'Senna Casque',cat:'F1 — Casques',ts:1778320680000,active:true,day:2},
+    {name:'Hadjar Casque',cat:'F1 — Casques',ts:1778318880000,active:true,day:2},
+    {name:'Russell Casque',cat:'F1 — Casques',ts:1778318880000,active:true,day:2},
+    {name:'Verstappen Casque',cat:'F1 — Casques',ts:1778314140000,active:true,day:2},
+    {name:'Prost',cat:'F1 — Casques',ts:1778314140000,active:true,day:2},
+    {name:'Leclerc Casque',cat:'F1 — Casques',ts:1778267520000,active:true,day:1},
+    {name:'Leclerc Casque',cat:'F1 — Casques',ts:1778267520000,active:true,day:1},
+    {name:'Verstappen Casque',cat:'F1 — Casques',ts:1778261100000,active:true,day:1},
+    {name:'Schumacher Casque',cat:'F1 — Casques',ts:1778261100000,active:true,day:1},
+    {name:'Schumacher Casque',cat:'F1 — Casques',ts:1778257200000,active:true,day:1},
+    {name:'Hamilton Casque',cat:'F1 — Casques',ts:1778256540000,active:true,day:1},
+    {name:'Verstappen Casque',cat:'F1 — Casques',ts:1778253480000,active:true,day:1},
+    {name:'Leclerc Casque',cat:'F1 — Casques',ts:1778252700000,active:true,day:1},
+    {name:'Senna Casque',cat:'F1 — Casques',ts:1778251980000,active:true,day:1},
+    {name:'Senna Casque',cat:'F1 — Casques',ts:1778246640000,active:true,day:1},
+    {name:'Senna Casque',cat:'F1 — Casques',ts:1778244000000,active:true,day:1},
+    {name:'Russell Casque',cat:'F1 — Casques',ts:1778243940000,active:true,day:1},
+    {name:'Senna Casque',cat:'F1 — Casques',ts:1778240100000,active:true,day:1},
+    {name:'Schumacher Casque',cat:'F1 — Casques',ts:1778238480000,active:true,day:1},
+    {name:'Calendrier F1 2026',cat:'Calendriers & Circuits',ts:1778237100000,active:true,day:1},
+    {name:'Verstappen Casque',cat:'F1 — Casques',ts:1778233800000,active:true,day:1},
+    {name:'Leclerc Casque',cat:'F1 — Casques',ts:1778233800000,active:true,day:1},
+    {name:'Norris Casque',cat:'F1 — Casques',ts:1778233560000,active:true,day:1},
+    {name:'Hamilton Casque',cat:'F1 — Casques',ts:1778233560000,active:true,day:1},
+    {name:'Schumacher Casque',cat:'F1 — Casques',ts:1778231640000,active:true,day:1}
+  ]
+};
 let S = Object.assign({}, INIT);
 let history = [];
 let currentDetail = null;
@@ -455,8 +595,27 @@ function load(){
   if(d) S = Object.assign({}, INIT, d);
   const h = store.get(KEY_HIST);
   if(h && h.length){ history = h; }
-  else{ history = [DIJON_ARCHIVE]; saveHist(); }
+  else{ history = [GPFH_ARCHIVE, DIJON_ARCHIVE]; saveHist(); }
+  // Charger le catalogue permanent
+  const cat = store.get(KEY_CAT);
+  if(cat){
+    // Fusionner les modèles perso dans le catalogue
+    Object.keys(cat).forEach(catName => {
+      if(!CATALOG[catName]) CATALOG[catName] = [];
+      cat[catName].forEach(name => {
+        if(!CATALOG[catName].includes(name)) CATALOG[catName].push(name);
+      });
+    });
+  }
 }
+
+function saveCustomCatalog(){
+  // Sauvegarder uniquement les modèles ajoutés manuellement
+  store.set(KEY_CAT, customCatalogAdditions);
+}
+
+// Stocke les ajouts permanents
+var customCatalogAdditions = store.get(KEY_CAT) || {};
 
 const esc = s => String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
 const totalStock = p => (p.cartons||0)*11+(p.units||0);
@@ -556,8 +715,16 @@ function addCustom(){
   if(S.products.some(p=>p.name.toLowerCase()===name.toLowerCase())){showToast('Existe déjà');return;}
   S.products.push({id:S.nextPid++,name,cat,cartons:0,units:0});
   document.getElementById('custom-name').value='';
+  // Ajouter au catalogue permanent
+  if(!CATALOG[cat]) CATALOG[cat] = [];
+  if(!CATALOG[cat].includes(name)){
+    CATALOG[cat].push(name);
+    if(!customCatalogAdditions[cat]) customCatalogAdditions[cat] = [];
+    if(!customCatalogAdditions[cat].includes(name)) customCatalogAdditions[cat].push(name);
+    saveCustomCatalog();
+  }
   save(); buildQuick(); renderSetup(); refreshNav(); renderSell();
-  showToast(name+' ajouté');
+  showToast(name+' ajouté et sauvegardé dans le catalogue ✓');
 }
 
 function setCartons(id,v){const p=S.products.find(x=>x.id===id);if(!p)return;p.cartons=Math.max(0,v);save();renderSetup();refreshNav();renderSell();}
@@ -588,12 +755,22 @@ function renderSetup(){
   el.innerHTML=html;
 }
 
+function toggleNoStock(checked){
+  S.noStock = checked;
+  const slider = document.getElementById('toggle-slider');
+  const thumb = document.getElementById('toggle-thumb');
+  if(slider) slider.style.background = checked ? '#16a34a' : '#e2e8f0';
+  if(thumb) thumb.style.left = checked ? '24px' : '4px';
+  save();
+}
+
 function startSell(){
   if(S.eventClosed){showToast('Événement clôturé');return;}
   S.eventName=document.getElementById('ev-name').value.trim();
   S.price=parseFloat(document.getElementById('ev-price').value)||35;
   if(!S.products.length){showToast('Ajoutez des cadres');return;}
-  if(!S.products.some(p=>totalStock(p)>0)){showToast('Définissez les quantités');return;}
+  // Mode sans stock: pas besoin de quantités définies
+  if(!S.noStock && !S.products.some(p=>totalStock(p)>0)){showToast('Définissez les quantités ou activez le mode sans stock');return;}
   if(!S.startedAt) S.startedAt=Date.now();
   save(); goTab('sell'); showToast('Go ! Bonne vente 🏁');
 }
@@ -663,8 +840,8 @@ function renderSell(){
 
   list.innerHTML=visible.map(p=>{
     const rem=remaining(p), sold=soldFor(p);
-    const sc=rem===0?'out':rem<=3?'low':'';
-    const st=rem===0?'ÉPUISÉ':''+rem+' restant'+(rem>1?'s':'');
+    const sc=S.noStock?'':(rem===0?'out':rem<=3?'low':'');
+    const st=S.noStock?'Mode sans stock':(rem===0?'ÉPUISÉ':''+rem+' restant'+(rem>1?'s':''));
     return '<div class="sell-card" id="sc_'+p.id+'"><div style="flex:1;min-width:0"><div class="s-name">'+esc(p.name)+'</div><div class="s-sub '+sc+'">'+st+(sold>0?' · <strong>'+sold+'</strong> vendu'+(sold>1?'s':''):'')+'</div></div>'
       +'<div class="s-right">'+(sold>0?'<div class="sold-badge">'+sold+'</div>':'')+(sold>0?'<button class="undo-btn" onclick="undoLast('+p.id+')">↺</button>':'')
       +'<button class="plus-btn" onclick="sell('+p.id+')" '+(rem===0||S.eventClosed||S.dayClosed?'disabled':'')+'>+</button></div></div>';
@@ -684,7 +861,7 @@ function renderSummary(){
   document.getElementById('quick-note').value=S.note||'';
 }
 
-// ===== STATS avec projection intelligente =====
+// ===== STATS =====
 function renderStats(){
   const dayActive = S.salesLog.filter(l=>l.active && (l.day||1)===S.currentDay);
   const allActive = S.salesLog.filter(l=>l.active);
@@ -715,31 +892,7 @@ function renderStats(){
   const tot2=allActive.length||1;
   document.getElementById('cat-breakdown').innerHTML=Object.keys(catMap).length?Object.entries(catMap).sort((a,b)=>b[1]-a[1]).map(([cat,n])=>'<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:13px;font-weight:800">'+(ICONS[cat]||'📦')+' '+esc(cat)+'</span><span style="font-size:13px;font-weight:900;color:var(--red)">'+n+'x · '+Math.round(n/tot2*100)+'%</span></div><div style="height:8px;background:#e2e8f0;border-radius:100px;overflow:hidden"><div style="height:100%;width:'+Math.round(n/tot2*100)+'%;background:var(--red);border-radius:100px"></div></div></div>').join(''):'<div class="empty">Aucune vente</div>';
 
-  // Projection intelligente
-  const projEl = document.getElementById('projection');
-  if(pace && pace>0 && dayActive.length>0){
-    const firstTs = Math.min(...dayActive.map(l=>l.ts));
-    const elapsedH = (Date.now()-firstTs)/3600000;
-    // Durée moyenne des jours précédents pour estimer temps restant
-    const prevDurations = S.dayClosures.filter(d=>d.durationH).map(d=>d.durationH);
-    const avgDayH = prevDurations.length ? prevDurations.reduce((a,b)=>a+b,0)/prevDurations.length : 7;
-    const hoursLeft = Math.max(0, avgDayH - elapsedH);
-    const ps = Math.round(pace*hoursLeft);
-    const hoursLeftStr = hoursLeft<1 ? Math.round(hoursLeft*60)+'min' : hoursLeft.toFixed(1)+'h';
-    const tot3 = dayActive.length+ps;
-    projEl.innerHTML='<div class="sum-row"><div class="rn">Cadence actuelle</div><div class="rs">'+pace.toFixed(1)+' ventes/h</div></div>'
-      +'<div class="sum-row"><div class="rn">Temps restant estimé</div><div class="rr">~'+hoursLeftStr+'</div></div>'
-      +'<div class="sum-row"><div class="rn">Ventes supplémentaires estimées</div><div class="rs">~'+ps+'</div></div>'
-      +'<div class="sum-row"><div class="rn">CA projeté fin de journée</div><div class="rc">~'+tot3*S.price+' €</div></div>';
-    if(S.dayClosures.length>0){
-      const avgSold=Math.round(S.dayClosures.reduce((a,d)=>a+d.sold,0)/S.dayClosures.length);
-      const diff=tot3-avgSold;
-      const sign=diff>=0?'+':'';
-      projEl.innerHTML+='<div style="margin-top:8px;background:rgba(22,163,74,.08);border:1px solid rgba(22,163,74,.2);border-radius:10px;padding:10px;font-size:13px;color:#15803d;font-weight:600">vs moyenne jours précédents ('+avgSold+' ventes) : <strong>'+sign+diff+'</strong></div>';
-    }
-  } else {
-    projEl.innerHTML='<div class="empty">Commencez à vendre pour voir la projection</div>';
-  }
+  // Projection supprimée
 }
 
 // ===== CLOSE DAY — verrouille les ventes =====
@@ -963,6 +1116,11 @@ function showToast(m){
 // ===== INIT =====
 load();
 document.getElementById('ev-name').value=S.eventName||'';
+// Init toggle no-stock
+if(S.noStock){
+  toggleNoStock(true);
+  const toggle=document.getElementById('toggle-no-stock');if(toggle)toggle.checked=true;
+}
 document.getElementById('ev-price').value=S.price||35;
 document.getElementById('sell-search').value=S.query||'';
 setStockMode(S.stockMode||'ALL');
@@ -976,6 +1134,5 @@ document.getElementById('btn-reset').addEventListener('click',resetAll);
 document.getElementById('sell-search').addEventListener('input',e=>{S.query=e.target.value;save();renderSell();});
 document.getElementById('btn-clear-search').addEventListener('click',()=>{S.query='';document.getElementById('sell-search').value='';save();renderSell();});
 </script>
-
 </body>
 </html>

@@ -100,6 +100,9 @@ select.inp{-webkit-appearance:none}
 .hist-name{font-size:1rem;font-weight:900;color:var(--text)}
 .hist-date{font-size:11px;color:var(--muted);font-weight:600;margin-top:2px}
 .hist-badge{font-size:11px;font-weight:800;padding:3px 10px;border-radius:100px;background:#fee2e2;color:#b91c1c}
+.hist-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.hist-delete{width:32px;height:32px;border:1px solid #fecaca;border-radius:9px;background:#fff;color:#dc2626;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.hist-delete:hover{background:#fef2f2;border-color:#f87171}
 .hist-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .hstat{background:#f8fafc;border-radius:10px;padding:8px;text-align:center}
 .hstat-v{font-size:1.1rem;font-weight:900;color:var(--text)}
@@ -594,7 +597,7 @@ function load(){
   const d = store.get(KEY);
   if(d) S = Object.assign({}, INIT, d);
   const h = store.get(KEY_HIST);
-  if(h && h.length){ history = h; }
+  if(Array.isArray(h)){ history = h; }
   else{ history = [GPFH_ARCHIVE, DIJON_ARCHIVE]; saveHist(); }
   // Charger le catalogue permanent
   const cat = store.get(KEY_CAT);
@@ -969,9 +972,20 @@ function renderHistory(){
     +'<div><div style="font-size:1.5rem;font-weight:900">'+history.length+'</div><div style="font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.08em;margin-top:3px">Events</div></div></div>';
   html+=history.map(ev=>{
     const topNames=ev.topSellers?ev.topSellers.slice(0,3).map(t=>'<span>'+esc(t.name)+' x'+t.sold+'</span>').join(''):'';
-    return '<div class="hist-card" onclick="showHistDetail(\''+ev.id+'\')"><div class="hist-header"><div><div class="hist-name">'+esc(ev.name)+'</div><div class="hist-date">'+ev.date+(ev.dateEnd&&ev.dateEnd!==ev.date?' → '+ev.dateEnd:'')+'</div></div><div class="hist-badge">Archivé</div></div><div class="hist-stats"><div class="hstat"><div class="hstat-v" style="color:var(--red)">'+ev.totalCA+' €</div><div class="hstat-l">CA</div></div><div class="hstat"><div class="hstat-v">'+ev.totalSold+'</div><div class="hstat-l">Vendus</div></div><div class="hstat"><div class="hstat-v">'+ev.days+'</div><div class="hstat-l">Jours</div></div></div>'+(topNames?'<div class="hist-top">Top : '+topNames+'</div>':'')+'</div>';
+    return '<div class="hist-card" onclick="showHistDetail(\''+ev.id+'\')"><div class="hist-header"><div><div class="hist-name">'+esc(ev.name)+'</div><div class="hist-date">'+ev.date+(ev.dateEnd&&ev.dateEnd!==ev.date?' → '+ev.dateEnd:'')+'</div></div><div class="hist-actions"><div class="hist-badge">Archivé</div><button class="hist-delete" type="button" title="Supprimer cet événement" aria-label="Supprimer '+esc(ev.name)+'" onclick="deleteHistoryEvent(\''+ev.id+'\',event)">🗑</button></div></div><div class="hist-stats"><div class="hstat"><div class="hstat-v" style="color:var(--red)">'+ev.totalCA+' €</div><div class="hstat-l">CA</div></div><div class="hstat"><div class="hstat-v">'+ev.totalSold+'</div><div class="hstat-l">Vendus</div></div><div class="hstat"><div class="hstat-v">'+ev.days+'</div><div class="hstat-l">Jours</div></div></div>'+(topNames?'<div class="hist-top">Top : '+topNames+'</div>':'')+'</div>';
   }).join('');
   cards.innerHTML=html;
+}
+
+function deleteHistoryEvent(id,event){
+  if(event) event.stopPropagation();
+  const ev=history.find(e=>e.id===id);if(!ev)return;
+  if(!confirm('Supprimer définitivement "'+ev.name+'" de l\'historique ?\n\nCette action est irréversible.'))return;
+  history=history.filter(e=>e.id!==id);
+  saveHist();
+  if(currentDetail&&currentDetail.id===id)showHistList();
+  renderHistory();
+  showToast('Événement supprimé');
 }
 
 function showHistDetail(id){
@@ -1086,15 +1100,20 @@ function goTab(t){
 }
 
 function resetAll(){
-  if(!confirm('Nouveau événement ? Les ventes actuelles seront perdues si non archivées.'))return;
-  S=Object.assign({},INIT,{nextPid:S.nextPid});
+  if(!confirm('Nouveau événement ? Le stock restant sera conservé, mais les ventes actuelles seront perdues si elles ne sont pas archivées.'))return;
+  const nextStock=S.products.map(p=>({
+    id:p.id,name:p.name,cat:p.cat,cartons:0,
+    units:S.noStock?totalStock(p):remaining(p)
+  }));
+  const nextPid=S.nextPid, price=S.price, noStock=S.noStock;
+  S=Object.assign({},INIT,{nextPid,price,noStock,products:nextStock});
   save();
   document.getElementById('ev-name').value='';
-  document.getElementById('ev-price').value=35;
+  document.getElementById('ev-price').value=price;
   document.getElementById('sell-search').value='';
   setStockMode('ALL');
   buildQuick();renderSetup();renderSell();renderSummary();refreshNav();
-  showToast('Prêt pour un nouvel événement !');
+  showToast('Nouvel événement — stock restant conservé !');
 }
 
 // ===== OFFLINE =====
